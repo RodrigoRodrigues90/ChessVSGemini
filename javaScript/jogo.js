@@ -23,7 +23,6 @@ async function callIA() {
     //const backendURL = "http://localhost:3000/api/jogada-ia";//teste
     const backendURL = "https://chess-stockfish-iota.vercel.app/api/jogada-ia";
     const estadoFEN = gerarFENdoTabuleiro(boardgame, turno, 1);
-    console.log(`dificuldade: nivel  ${engine_level}`)
     try {
         const response = await fetch(backendURL, {
             method: 'POST',
@@ -154,7 +153,7 @@ function aplicarMovimentoRecebido(textoBrutoIA) {
 export var segundosTempo1 = 59;
 export var minutosTempo1 = 4;
 export var segundosTempo2 = 59;
-export var minutosTempo2 = 4;
+export var minutosTempo2 = 9;
 export var tempo1;
 export var tempo2;
 export let placarBrancas = 0;
