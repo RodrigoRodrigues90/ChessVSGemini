@@ -372,10 +372,15 @@ export function checkXequeMate(string) {//xeque-mate!!!
         playWinSound()
         pausarTempo(!turno);
         canvas.classList.add('canvas-disabled');
-        document.getElementById("vez").innerHTML = "xeque-mate!";
+        document.getElementById("vez").innerHTML = "xeque-mate! " +alertTurno()+ " vencem!!!";
+        const btn = document.querySelector("#play");
+        btn.disabled = false
+        btn.value = "Reiniciar" 
+        btn.removeAttribute("onclick");
+        btn.addEventListener("click", function(){location.reload()})
         setTimeout(function () {
             playXequeMateAlert();
-        }, 2000)
+        }, 1000)
     }
 }
 //----------------------------------------
