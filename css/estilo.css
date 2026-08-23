@@ -599,7 +599,7 @@ body {
 /* Modal de Fim de Jogo */
 
 .modal-derrota {
-    position: relative;
+    width: 300px;
     overflow: hidden;
     padding: 32px 24px;
     border-radius: 16px;
@@ -616,7 +616,7 @@ body {
     box-shadow: 0 2px 12px 4px rgba(53, 99, 16, 0.616);
     filter: grayscale(55%);
     border: 2px solid rgba(38, 67, 15, 0.978);
-    max-width: 600px;
+    
 
 }
 
@@ -624,12 +624,10 @@ body {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 12px;
-
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.947);
 }
 
 #descricao-fim-de-jogo {
-    width: 70%;
     font-size: 0.85rem;
     line-height: 1.5;
     margin-bottom: 24px;
@@ -645,15 +643,14 @@ body {
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 12px rgba(39, 67, 13, 0.74);
     transition: all 0.2s ease;
-    background-color: #2e445430 !important;
+    background-color: #2d552639 !important;
     backdrop-filter: blur(2px);
-
 }
 
 .modal-vitoria {
-    position: relative;
+    width: 300px;
     overflow: hidden;
     padding: 32px 24px;
     border-radius: 16px;
