@@ -7,15 +7,15 @@ const mensagensDerrota = {
     ],
 
     medio: [
-        "Xeque-mate. Talvez valha a pena tentar de novo, no nível iniciante.",
+        "Xeque-mate. Talvez valha a pena tentar de novo.." + "\n" + "..no nível iniciante.",
         "Xeque-mate. O peixe vence de novo!!!" + "\n" + "Tente novamente.",
         "Xeque-mate. O nível médio exige concentração." + "\n" + "Tente de novo.",
     ],
 
     avancado: [
-        "Xeque-mate. Nem Kasparov venceu o peixe nesse nível." + "\n" + "Tente de novo.",
-        "Xeque-mate. Nem Bobby Fischer venceria." + "\n" + "Tente de novo.",
-        "Xeque-mate. Magnus talvez chegaria perto, você nunca!" + "\n" + "Tente de novo."
+        "Xeque-mate. Nem Kasparov venceria o peixe nesse nível." + "\n" + "Tente de novo.",
+        "Xeque-mate. Nem Bobby Fischer venceria o peixe nesse nível." + "\n" + "Tente de novo.",
+        "Xeque-mate. Magnus Carlsen talvez chegaria perto, você nunca!" + "\n" + "Tente de novo."
     ]
 };
 const mensagensVitoria = {
@@ -35,7 +35,7 @@ const mensagensVitoria = {
     avancado: [
         "Xeque-mate! Vitória impressionante digna de mestre! 🤯",
         "Xeque-mate! Ou você é Grandmaster ou usou outra engine! 🔍",
-        "Xeque-mate! Ora Ora, temos um Bobby Fisher aqui. 🤯"
+        "Xeque-mate! Ora Ora, temos um Bobby Fischer aqui. 🤯"
     ]
 };
 /**

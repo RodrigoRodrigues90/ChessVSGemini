@@ -4,7 +4,7 @@ import { desenharCoordenadas, gerarFEN, algebraicoParaCoord, converterParaUCI } 
 import { obterJogadaStockfish } from './api.js';
 import { exibirModalFimDeJogo } from './fimdejogo.js';
 import { calcularSaldoPorCapturas } from './saldo.js';
-import { tipyng ,pararTyping} from './tipyng.js';
+import { tipyng, pararTyping } from './tipyng.js';
 
 const elComentario = document.getElementById('texto-comentario');
 const DOM_TABULEIRO = document.getElementById('tabuleiro');
@@ -27,6 +27,7 @@ let saldoJogador = 0
 const capturadasPeloJogador = [];
 const capturadasPelaIA = [];
 let historicoLista = [];
+let ultimoLance = null
 
 //--------------- ELEMENTOS DE INTERFACE ----------------//
 const nivelTitulo = document.getElementById('nivel-titulo')
@@ -52,7 +53,7 @@ function selecionarCor(cor) {
     corIA = cor === 'w' ? 'b' : 'w'; // Inverte a cor da IA
 
     // Transição: Esconde modal de cor e abre o de dificuldade
-    modalCor.classList.add('modal-oculto');
+    modalCor.classList.add('fade-out')
     modalDificuldade.classList.remove('modal-oculto');
 }
 
@@ -63,7 +64,7 @@ btnsDificuldade.forEach(btn => {
         nivelDificuldade = parseInt(target.dataset.level, 10);
 
         // Oculta o modal de dificuldade
-        modalDificuldade.classList.add('modal-oculto');
+        modalDificuldade.classList.add('fade-out');
         definirDificuldade(nivelDificuldade);
 
         // Inicia a partida com as configurações definidas
@@ -279,6 +280,14 @@ function renderizarTabuleiro() {
                 casa.classList.add('selecionada');
             }
 
+            if (ultimoLance) {
+                const ehOrigem = ultimoLance.origem.linha === linha && ultimoLance.origem.coluna === coluna;
+                const ehDestino = ultimoLance.destino.linha === linha && ultimoLance.destino.coluna === coluna;
+                if (ehOrigem || ehDestino) {
+                    casa.classList.add(ehOrigem ? 'casa-origem' : 'casa-destino');
+                }
+            }
+
             // Destaque do rei em xeque
             if (reiEmxeque && casaRei && casaRei.linha === linha && casaRei.coluna === coluna) {
                 casa.classList.add('reiemxeque');
@@ -359,10 +368,13 @@ function simularPensamentoIAComentario() {
 
     // limpar intervalo rodando em paralelo
     pararPensamentoIAComentario();
+    const avisoXeque = jogo.estaEmXeque(corIA)
+        ? ' <span style="color: red; font-weight: bold;">XEQUE!!! </span>'
+        : '';
 
     simular_pensamento_IA = setInterval(() => {
         pontos = (pontos + 1) % 4; // Alterna entre 0, 1, 2 e 3
-        elComentario.textContent = 'Pensando' + '.'.repeat(pontos);
+        elComentario.innerHTML = `${avisoXeque}`+ 'Pensando' + '.'.repeat(pontos);
     }, 400);
 }
 
@@ -412,6 +424,12 @@ function tratarCliqueCasa(linha, coluna) {
 
         //para checagem de captura de peça inimiga
         const TemPecaInimiga = jogo.obterPeca(linha, coluna);
+
+        // guarda a casa jogada para destacar na renderização do tabuleiro
+        ultimoLance = {
+            origem: { linha: casaSelecionada.linha, coluna: casaSelecionada.coluna },
+            destino: { linha, coluna }
+        };
 
         //realizar movimento
         jogo.moverPeca(casaSelecionada.linha, casaSelecionada.coluna, linha, coluna);
@@ -472,6 +490,7 @@ function tratarCliqueCasa(linha, coluna) {
 
     // Selecionar uma peça própria
     if (corPecaClicada === jogo.turno) {
+        ultimoLance = null
         casaSelecionada = { linha, coluna };
         movimentosPossiveis = jogo.obterMovimentosValidos(linha, coluna);
         renderizarTabuleiro();
@@ -533,6 +552,11 @@ async function executarTurnoIA() {
         const ehEnpassant = validarEnpassant(jogo.obterPeca(origem.linha, origem.coluna), origem, destino);
 
         // 3. Executa a jogada no tabuleiro IMEDIATAMENTE
+
+        ultimoLance = {//destaque das casas jogadas
+            origem: { linha: origem.linha, coluna: origem.coluna },
+            destino: { linha: destino.linha, coluna: destino.coluna }
+        };
         const jogoTurno = jogo.turno; // Salva o turno antes de mover
         jogo.moverPeca(origem.linha, origem.coluna, destino.linha, destino.coluna);
 
@@ -592,9 +616,14 @@ async function executarTurnoIA() {
             : "";
 
         // 6.2 Avaliação do meio-jogo fornecida pelo Stockfish
-            const avaliacaoMeioJogo = resposta.meioJogo?.avaliacao
-                ? `${resposta.meioJogo.avaliacao.desc}`
-                : "";
+        const avaliacaoMeioJogo = resposta.meioJogo?.avaliacao
+            ? `${resposta.meioJogo.avaliacao.desc}`
+            : "";
+
+        // 6.3 Verificação de Xeque para tag em vermelho
+        const avisoXeque = jogo.estaEmXeque(corJogador)
+            ? ' <span style="color: red; font-weight: bold;">XEQUE!!! </span>'
+            : '';
 
         // Agrupa apenas as mensagens existentes
         const comentarios = [aberturaInfo, avaliacaoMeioJogo]
@@ -602,7 +631,7 @@ async function executarTurnoIA() {
             .join("<br><br>");
 
         // Renderiza o HTML interpretando as tags <strong> e os <br>
-        tipyng(`Joguei ${uci}.${comentarios ? "<br>" + comentarios : ""}`);
+        tipyng(`Joguei ${uci}.${avisoXeque}${comentarios ? "<br>" + comentarios : ""}`);
         pararPensamentoIAComentario();
     }
     processandoIA = false;
@@ -643,6 +672,7 @@ function desfazerJogada() {
     capturadasPeloJogador.length = 0;
     capturadasPeloJogador.push(...estadoAnterior.capturadasPeloJogador);
     historicoLista.splice(-2); // Remove um lance inteiro do histórico de jogadas
+    ultimoLance = null
 
     capturadasPelaIA.length = 0;
     capturadasPelaIA.push(...estadoAnterior.capturadasPelaIA);
@@ -686,36 +716,36 @@ function atualizarBotaoDesfazer() {
 btnDesistir.addEventListener('click', desistirPartida);
 function desistirPartida() {
     if (jogo.jogoFinalizado || processandoIA) return;
-
+    
     const confirmou = confirm("Tem certeza de que deseja desistir da partida?");
     if (!confirmou) return;
-
+    
     // Encerra a partida
     jogo.jogoFinalizado = true;
     if (relogio && typeof relogio.parar === 'function') {
         relogio.parar();
     }
-
+    
     // Trava os controles
     podeDesfazer = false;
     atualizarBotaoDesfazer();
-
+    
     finalizarPartida('derrota', 'DESISTÊNCIA');
 }
 
 /**
  * Função centralizada para encerrar a partida
- */
+*/
 function finalizarPartida(resultado, motivo) {
     jogo.jogoFinalizado = true;
-
+    
     if (relogio && typeof relogio.parar === 'function') {
         relogio.parar();
     }
-
+    
     podeDesfazer = false;
     atualizarBotaoDesfazer();
-
+    
     // Transforma o botão de Desistir em botão de Recomeçar
     btnDesistir.textContent = '🔄 Recomeçar';
     btnDesistir.addEventListener('click', () => {
@@ -724,6 +754,7 @@ function finalizarPartida(resultado, motivo) {
         })
     })
     // comentario do stockfish
+    pararTyping()
     if (resultado === 'vitoria') {
         elComentario.textContent = "Fim de jogo por " + motivo.toLowerCase() + "🤝🤯"
     } else {

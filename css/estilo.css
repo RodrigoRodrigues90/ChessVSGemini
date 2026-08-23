@@ -11,7 +11,7 @@ body {
     justify-content: space-between;
     align-items: center;
     min-height: 100vh;
-    background-color: #1e1e24;
+    background-color: #151515;
     font-family: sans-serif;
 }
 
@@ -220,7 +220,6 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1px;
     min-height: fit-content;
     background-color: #f3f1f1;
     border-radius: 6px;
@@ -267,6 +266,13 @@ body {
 .casa.selecionada {
     background-color: #baca44 !important;
 }
+.casa-origem {
+    background-color: rgba(255, 250, 205, 0.767) !important;
+}
+
+.casa-destino {
+    background-color: rgba(255, 245, 175, 0.40) !important;
+}   
 
 .rotulo-coordenada {
     position: absolute;
@@ -433,6 +439,17 @@ body {
 }
 
 /* Modal de Seleção de Cor */
+#modal-selecao-cor.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#modal-selecao-cor {
+    opacity: 1;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+
+}
+
 .opcoes-cor {
     display: flex;
     gap: 15px;
@@ -464,6 +481,17 @@ body {
 }
 
 /* Modal de Dificuldade */
+#modal-dificuldade {
+    opacity: 1;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+
+}
+
+#modal-dificuldade.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
 #modal-dificuldade .modal-conteudo {
     background-image:
         linear-gradient(rgba(7, 7, 7, 0.983), rgba(26, 24, 24, 0.777)),
@@ -578,32 +606,31 @@ body {
     color: #eeeded;
     text-align: right;
     background-color: #000000;
-    background-image: 
-        radial-gradient(
-            circle at 30% 105%, 
-            rgba(0, 0, 0, 0.551) 0%, 
-            rgba(0, 0, 0, 0.955) 60%, 
-            rgb(0, 0, 0) 100%  
-        ),
-        url("../img/rei-caído.jpg"); 
-    
+    background-image:
+        linear-gradient(to left, #060606fe, rgba(4, 4, 4, 0.937), #0000004f),
+        url("../img/wp.jpg");
+
     background-size: cover;
-    background-position: 100% 0px, -50px 100% ;
+    background-position: 100% 0px, -90px 90%;
     background-repeat: no-repeat;
     box-shadow: 0 2px 12px 4px rgba(53, 99, 16, 0.616);
     filter: grayscale(55%);
+    border: 2px solid rgba(38, 67, 15, 0.978);
+    max-width: 600px;
+
 }
 
 #modal-fim-de-jogo h2 {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 12px;
-    
+
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.947);
 }
 
 #descricao-fim-de-jogo {
-    font-size: 0.95rem;
+    width: 70%;
+    font-size: 0.85rem;
     line-height: 1.5;
     margin-bottom: 24px;
     font-weight: 800;
@@ -612,7 +639,6 @@ body {
 
 /* Botão de Ação */
 #modal-fim-de-jogo .btn-action {
-    background-color: #254e2ef1;
     color: #ffffff;
     border: 1px solid #555555;
     padding: 10px 28px;
@@ -621,6 +647,9 @@ body {
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     transition: all 0.2s ease;
+    background-color: #2e445430 !important;
+    backdrop-filter: blur(2px);
+
 }
 
 .modal-vitoria {
@@ -630,18 +659,19 @@ body {
     border-radius: 16px;
     color: white;
     text-align: left;
-    background-color: #1918154d;
-    background-image: 
-        radial-gradient(circle at 70% 30%, rgba(183, 155, 13, 0.146), rgba(0, 0, 0, 0.78) 100%),
-        linear-gradient(to right, #060606e9,rgba(54, 51, 51, 0.551), #00000000),
+    background-color: #000000f9;
+    background-image:
+        linear-gradient(to right, #000000, rgba(0, 0, 0, 0.512), #00000000),
         url("../img/rei.jpg");
     border: 2px solid #9b9b52b4;
     background-size: 190px;
-    background-position:right ,right ;
+    background-position: right, right;
     background-repeat: no-repeat;
+    max-width: 600px;
     box-shadow: 0 0 32px 5px rgba(201, 178, 101, 0.384), 0 10px 25px rgba(0, 0, 0, 0.425);
 }
-.modal-empate{
+
+.modal-empate {
     position: relative;
     overflow: hidden;
     padding: 32px 24px;
@@ -649,15 +679,11 @@ body {
     color: white;
     text-align: center;
     background-color: #000000;
-    background-image: 
+    background-image:
         radial-gradient(circle at 50% 80%, rgba(28, 29, 28, 0.671), rgba(0, 0, 0, 0.999) 90%),
         url('../img/wp.jpg');
-    background-repeat: no-repeat;  
-    background-size: 400px;  
-    >button{
-        background-color: #2e445430 !important;
-        backdrop-filter: blur(2px);
-    }
+    background-repeat: no-repeat;
+    background-size: 400px;
 }
 
 /* Modal Sobre (About) */
