@@ -464,6 +464,7 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s, background-color 0.2s;
+    backdrop-filter: blur(3px)
 }
 
 .btn-cor:hover {
@@ -471,12 +472,12 @@ body {
 }
 
 .btn-cor.branca {
-    background-color: #d4d3d1;
-    color: #2b2b2b;
+    background-color:  #fdfcfb63;
+    color: #ffffff;
 }
 
 .btn-cor.preta {
-    background-color: #497056;
+    background-color: #49705654;
     color: #ffffff;
 }
 
