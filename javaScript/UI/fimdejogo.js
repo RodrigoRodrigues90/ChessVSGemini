@@ -102,7 +102,7 @@ export function exibirModalFimDeJogo(resultado, nivelDificuldade, motivo = '') {
             titulo = '🤝 Empate';
             modalConteudo.classList.add('modal-empate')
             if (motivo === 'AFOGAMENTO') {
-                descricao = 'Empate por afogamento (Stalemate)! O rei não tem lances legais disponíveis, mas não está em xeque.';
+                descricao = 'Empate por afogamento! O rei não tem lances legais disponíveis, mas não está em xeque.';
             } else {
                 descricao = 'Uma partida muito equilibrada! Nenhum dos lados conseguiu a vantagem decisiva.';
             }

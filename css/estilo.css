@@ -66,11 +66,6 @@ body {
     transform: scale(1.05);
 }
 
-.btn-audio.mutado {
-    background-color: #5a2a2a;
-    border-color: #773333;
-}
-
 .about-btn {
     display: flex;
     justify-content: center;

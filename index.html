@@ -5,14 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChessFish</title>
+
+    <!-- Estilos -->
     <link rel="stylesheet" href="css/estilo.css">
     <link rel="stylesheet" href="css/loading.css">
+
+    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@700;800&display=swap" rel="stylesheet">
-    <script type="module" src="javaScript/loading.js" defer></script>
-    <script type="module" src="javaScript/main.js" defer></script>
-    <script type="module" src="javaScript/tabuleiro.js" defer></script>
+
+    <!-- Scripts Módulos -->
+    <script type="module" src="./javaScript/UI/loading.js" defer></script>
+    <script type="module" src="./javaScript/main.js" defer></script>
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/stockfish.png" />
 </head>
 
@@ -72,14 +79,13 @@
 </div>
 
 <!-- modal de settings -->
-<div id="modal-about" class="modal-overlay hidden" aria-hidden="true">
+<div id="modal-settings" class="modal-overlay hidden" aria-hidden="true">
     <div class="modal-card">
 
-        <button id="btn-close-about" class="modal-close-btn" aria-label="Fechar">✕</button>
+        <button id="btn-close-setings" class="modal-close-btn" aria-label="Fechar">✕</button>
 
         <div class="modal-header">
             <h2>Configurações</h2>
-            <p class="modal-subtitle">Aplicação interativa de xadrez e análise de aberturas</p>
         </div>
 
         <div class="modal-body">
@@ -95,16 +101,6 @@
                 </div>
                 <input type="range" id="music-volume" min="0" max="100" value="80">
             </div>
-
-            <!-- Rodapé / Créditos -->
-            <div class="modal-footer">
-                <span>Desenvolvido por <strong>Rodrigo Rodrigues</strong></span>
-                <a href="https://rodrigorodrigues90.github.io/Portfolio/" target="_blank" rel="noopener noreferrer"
-                    class="github-link">
-                    Sobre mim ↗
-                </a>
-            </div>
-
         </div>
     </div>
 </div>
@@ -114,6 +110,8 @@
     <div class="modal-card">
 
         <!-- Botão Fechar -->
+        <button id="btn-close-about" class="modal-close-btn" aria-label="Fechar">✕</button>
+
 
         <!-- Cabeçalho -->
         <div class="modal-header">
@@ -191,11 +189,8 @@
             <div class="wrapper-buttons-header">
                 <button id="btn-about" class="about-btn">
                     <span class="about-icon">ℹ</span>
-                </button>
-                <button id="btn-mutar-audio" class="btn-audio" title="Alternar Som">
-                    <span id="icone-audio">🔊</span>
-                </button>
-                <!-- <button id="open-settings-btn" class="icon-btn">⚙️</button> -->
+                </button>               
+                <button id="btn-settings" class="icon-btn">⚙️</button>
             </div>
         </div>
     </header>
