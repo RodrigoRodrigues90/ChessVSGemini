@@ -102,24 +102,54 @@ function iniciarJogo() {
 }
 
 //------------------------------ Audios ------------------------------//
-const audioMovimento = new Audio('./sounds/chesspiece.mp3');
-const audioXeque = new Audio('./sounds/xeque.mp3');
-const audioXequeMate = new Audio('./sounds/win.mp3');
-const audioCaptura = new Audio('./sounds/botão.mp3');
-const audioAlerta = new Audio('./sounds/clock.mp3');
+
+const audioCtx = new window.AudioContext;
+const somBuffers = {};
+// Lista com os caminhos dos arquivos
+const arquivosSons = {
+    movimento: './sounds/chesspiece.mp3',
+    xeque: './sounds/xeque.mp3',
+    xequeMate: './sounds/win.mp3',
+    captura: './sounds/botão.mp3',
+    alerta: './sounds/clock.mp3'
+};
+
+async function carregarSons() {
+    for (const [nome, url] of Object.entries(arquivosSons)) {
+        try {
+            const resposta = await fetch(url);
+            const arrayBuffer = await resposta.arrayBuffer();
+            somBuffers[nome] = await audioCtx.decodeAudioData(arrayBuffer);
+        } catch (erro) {
+            console.error(`Erro ao carregar o som correspondente: ${nome}`, erro);
+        }
+    }
+}
+
+carregarSons();
+
 const music = new Audio('./sounds/music.mp3');
 music.loop = true;
-music.volume = 1; // Volume ajustado para música de fundo não encobrir os efeitos
-let musicaPausada = true; // Começa pausada
+music.volume = 0.5;
+let musicaPausada = true;
 
-//toca sons gerais de jogo, como movimento, xeque, xeque-mate e captura
-function tocarSom(audio) {
-    if (!audio) return;
-    
-    // Clona o nó de áudio para tocar uma instância independente
-    const clone = audio.cloneNode();
-    clone.volume = audio.volume; // Mantém o volume configurado
-    clone.play().catch(error => console.log("Erro ao tocar áudio:", error));
+function tocarSom(nomeSom) {
+    const buffer = somBuffers[nomeSom];
+    if (!buffer) return;
+
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.value = 1.0; 
+
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    source.start(0);
 }
 
 // Inicia a música no primeiro clique do usuário para evitar bloqueio do navegador
@@ -205,7 +235,7 @@ const relogio = new Clock(
             // 5. Controle do Alerta Sonoro
             if (emPerigoW) {
                 if (!alertaTocadoW) {
-                    tocarSom(audioAlerta);
+                    tocarSom('alerta');
                     alertaTocadoW = true;
                 }
             } else {
@@ -214,7 +244,7 @@ const relogio = new Clock(
 
             if (emPerigoB) {
                 if (!alertaTocadoB) {
-                    tocarSom(audioAlerta);
+                    tocarSom('alerta');
                     alertaTocadoB = true;
                 }
             } else {
@@ -224,7 +254,7 @@ const relogio = new Clock(
     },
     (quemPerdeu) => {
         jogo.jogoFinalizado = true;
-        tocarSom(audioXequeMate);
+        tocarSom('xequeMate');
 
         // Se quem perdeu por tempo tiver cor diferente da do jogador, o jogador venceu
         const jogadorVenceu = quemPerdeu !== corJogador;
@@ -447,7 +477,7 @@ function tratarCliqueCasa(linha, coluna) {
             renderizarTabuleiro();
             if (estadoFim.tipo === 'XEQUE_MATE') {
                 const resultado = estadoFim.vencedor === corJogador ? 'vitoria' : 'derrota';
-                tocarSom(audioXequeMate);
+                tocarSom('xequeMate');
                 setTimeout(() => {
                     finalizarPartida(resultado, estadoFim.tipo)
                 }, 1000);
@@ -460,18 +490,18 @@ function tratarCliqueCasa(linha, coluna) {
         }
 
         if (TemPecaInimiga) {
-            tocarSom(audioCaptura); // Som de captura
+            tocarSom('captura'); // Som de captura
             registrarCaptura(TemPecaInimiga, jogoTurno); // Registra a captura
         }
         else if (ehEnpassant) { //se não tiver peça inimiga, mas for um movimento de enpassant, registra a captura
-            tocarSom(audioCaptura); // Som de captura
+            tocarSom('captura'); // Som de captura
             registrarCaptura('p', jogoTurno); // Registra a captura
         }
         // Toca som adequado para a jogada (Xeque vs Movimento Padrão)
         if (jogo.estaEmXeque && jogo.estaEmXeque(jogo.turno)) {
-            tocarSom(audioXeque);
+            tocarSom('xeque');
         }
-        tocarSom(audioMovimento);
+        tocarSom('movimento');
 
 
         renderizarTabuleiro();
@@ -565,17 +595,17 @@ async function executarTurnoIA() {
 
         // 3.1 Dispara os efeitos sonoros correspondentes sem atraso
         if (ehCaptura) {
-            tocarSom(audioCaptura);
+            tocarSom('captura');
             registrarCaptura(pecaDestino, jogoTurno); // Registra a captura
         }
         else if (ehEnpassant) { //se não tiver peça inimiga, mas for um movimento de enpassant, registra a captura
-            tocarSom(audioCaptura); // Som de captura
+            tocarSom('captura'); // Som de captura
             registrarCaptura('p', jogoTurno); // Registra a captura
         }
         if (jogo.estaEmXeque(corJogador)) { //se for um xeque toca o som
-            tocarSom(audioXeque);
+            tocarSom('xeque');
         }
-        tocarSom(audioMovimento); // Som de movimento padrão
+        tocarSom('movimento'); // Som de movimento padrão
 
         // 4. Checa Fim de Jogo
         const estadoFim = jogo.verificarFimDeJogo();
@@ -584,7 +614,7 @@ async function executarTurnoIA() {
             renderizarTabuleiro();
             if (estadoFim.tipo === 'XEQUE_MATE') {
                 const resultado = estadoFim.vencedor === corJogador ? 'vitoria' : 'derrota';
-                tocarSom(audioXequeMate);
+                tocarSom('xequeMate');
                 setTimeout(() => {
                     finalizarPartida(resultado, estadoFim.tipo)
                 }, 1000);
@@ -702,7 +732,7 @@ function desfazerJogada() {
         renderizarPecasCapturadas();
     }
     renderizarTabuleiro();
-    tocarSom(audioMovimento);
+    tocarSom('movimento');
 }
 
 // Auxiliar visual do botão no HTML
