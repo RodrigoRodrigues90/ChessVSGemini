@@ -13,7 +13,7 @@
     <script type="module" src="javaScript/loading.js" defer></script>
     <script type="module" src="javaScript/main.js" defer></script>
     <script type="module" src="javaScript/tabuleiro.js" defer></script>
-    <link rel="icon" type="image/svg+xml" href="img/stockfish.png" />
+    <link rel="icon" type="image/png" href="img/stockfish.png" />
 </head>
 
 <!-- Modal 1: Escolha de Dificuldade -->
@@ -71,12 +71,49 @@
     </div>
 </div>
 
+<!-- modal de settings -->
+<div id="modal-about" class="modal-overlay hidden" aria-hidden="true">
+    <div class="modal-card">
+
+        <button id="btn-close-about" class="modal-close-btn" aria-label="Fechar">✕</button>
+
+        <div class="modal-header">
+            <h2>Configurações</h2>
+            <p class="modal-subtitle">Aplicação interativa de xadrez e análise de aberturas</p>
+        </div>
+
+        <div class="modal-body">
+            <div class="setting-item">
+                <label for="sfx-toggle">Efeitos Sonoros (SFX)</label>
+                <input type="checkbox" id="sfx-toggle" checked>
+            </div>
+
+            <div class="setting-item vertical">
+                <div class="setting-label-row">
+                    <label for="music-volume">Volume da Música</label>
+                    <span id="music-volume-value">80%</span>
+                </div>
+                <input type="range" id="music-volume" min="0" max="100" value="80">
+            </div>
+
+            <!-- Rodapé / Créditos -->
+            <div class="modal-footer">
+                <span>Desenvolvido por <strong>Rodrigo Rodrigues</strong></span>
+                <a href="https://rodrigorodrigues90.github.io/Portfolio/" target="_blank" rel="noopener noreferrer"
+                    class="github-link">
+                    Sobre mim ↗
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- Modal Sobre o Projeto -->
 <div id="modal-about" class="modal-overlay hidden" aria-hidden="true">
     <div class="modal-card">
 
         <!-- Botão Fechar -->
-        <button id="btn-close-about" class="modal-close-btn" aria-label="Fechar">✕</button>
 
         <!-- Cabeçalho -->
         <div class="modal-header">
@@ -158,6 +195,7 @@
                 <button id="btn-mutar-audio" class="btn-audio" title="Alternar Som">
                     <span id="icone-audio">🔊</span>
                 </button>
+                <!-- <button id="open-settings-btn" class="icon-btn">⚙️</button> -->
             </div>
         </div>
     </header>

@@ -115,8 +115,11 @@ let musicaPausada = true; // Começa pausada
 //toca sons gerais de jogo, como movimento, xeque, xeque-mate e captura
 function tocarSom(audio) {
     if (!audio) return;
-    audio.currentTime = 0;
-    audio.play().catch(error => console.log("Erro ao tocar áudio:", error));
+    
+    // Clona o nó de áudio para tocar uma instância independente
+    const clone = audio.cloneNode();
+    clone.volume = audio.volume; // Mantém o volume configurado
+    clone.play().catch(error => console.log("Erro ao tocar áudio:", error));
 }
 
 // Inicia a música no primeiro clique do usuário para evitar bloqueio do navegador
