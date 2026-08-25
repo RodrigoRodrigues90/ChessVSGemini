@@ -359,6 +359,16 @@ function atualizarBotaoDesfazer() {
 }
 
 // Função para disparar o download do arquivo JSON
+function obterDataFormatada() {
+    const agora = new Date();
+    const ano = agora.getFullYear();
+    const mes = String(agora.getMonth() + 1).padStart(2, '0');
+    const dia = String(agora.getDate()).padStart(2, '0');
+
+    return `${ano}-${mes}-${dia}`;
+}
+
+// gera o arquivo com os dados da partida
 export function exportarPartidaJSON() {
     if (!estadoJogo.historicoLista || estadoJogo.historicoLista.length === 0) return;
 
@@ -371,11 +381,13 @@ export function exportarPartidaJSON() {
 
     const blob = new Blob([JSON.stringify(dadosJogo, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-
+    
+    const dataFormatada = obterDataFormatada();
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chessfish-${Date.now()}.json`;
+    a.download = `chessfish-partida_${dataFormatada}.json`;
     a.click();
+    
     URL.revokeObjectURL(url);
 }
 
