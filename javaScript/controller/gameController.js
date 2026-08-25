@@ -69,7 +69,7 @@ export const relogio = new Clock(
 );
 
 // Auxiliares de UI/Render
-function atualizarTela() {
+export function atualizarTela() {
     renderizarTabuleiro(
         jogo,
         estadoJogo.corJogador,
@@ -147,30 +147,32 @@ export function tratarCliqueCasa(linha, coluna) {
             tocarSom('xequeMate');
             setTimeout(() => {
                 finalizarPartida(estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'empate', estadoFim.tipo);
-            }, 1000);
+            }, 1200);
             return;
         }
 
         //====Sons====// 
-        if (TemPecaInimiga) {
-            tocarSom('movimento');
-            tocarSom('captura');
-            registrarCaptura(TemPecaInimiga, jogoTurno);
-        } else {
-            tocarSom('movimento');
-        }
+        setTimeout(() => {
+            if (TemPecaInimiga) {
+                tocarSom('movimento');
+                tocarSom('captura');
+                registrarCaptura(TemPecaInimiga, jogoTurno);
+            } else {
+                tocarSom('movimento');
+            }
 
-        if(jogo.estaEmXeque(estadoJogo.corIA)){
-            tocarSom('xeque')
-        }
+            if (jogo.estaEmXeque(estadoJogo.corIA)) {
+                tocarSom('xeque');
+            }
+        }, 220);
         //============//
 
         atualizarTela();
         relogio.mudarTurno ? relogio.mudarTurno(jogo.turno) : relogio.alternarTurno();
-        
+
         pararTyping();
         simularPensamentoIAComentario();
-        
+
         setTimeout(() => executarTurnoIA(), 2000);
         return;
     }
@@ -209,17 +211,21 @@ export async function executarTurnoIA() {
         jogo.moverPeca(origem.linha, origem.coluna, destino.linha, destino.coluna);
 
         //tocar som
-        if (pecaDestino) {
-            tocarSom('movimento')
-            tocarSom('captura');
-            registrarCaptura(pecaDestino, jogoTurno);
-        } else {
-            tocarSom('movimento');
-        }
+        setTimeout(() => {
 
-        if(jogo.estaEmXeque(estadoJogo.corJogador)){
-            tocarSom('xeque')
-        };
+            if (pecaDestino) {
+                tocarSom('movimento')
+                tocarSom('captura');
+                registrarCaptura(pecaDestino, jogoTurno);
+            } else {
+                tocarSom('movimento');
+            }
+
+            if (jogo.estaEmXeque(estadoJogo.corJogador)) {
+                tocarSom('xeque')
+            };
+
+        },220);
 
         const estadoFim = jogo.verificarFimDeJogo();
         if (estadoFim) {
@@ -276,6 +282,8 @@ export function desfazerJogada() {
     estadoJogo.capturadasPelaIA = [...prev.capturadasPelaIA];
     estadoJogo.historicoLista.splice(-2);
     estadoJogo.ultimoLance = null;
+    estadoJogo.casaSelecionada = null;
+    estadoJogo.movimentosPossiveis = []
 
     const resposta = calcularSaldoPorCapturas(estadoJogo.capturadasPelaIA, estadoJogo.capturadasPeloJogador);
     estadoJogo.saldoIA = resposta.vantagemIA;
@@ -302,7 +310,16 @@ export function finalizarPartida(resultado, motivo) {
     jogo.jogoFinalizado = true;
     relogio.parar();
     estadoJogo.podeDesfazer = false;
-    atualizarBotaoDesfazer();
+
+    const btnDesfazer = document.getElementById('btn-desfazer');
+    if (btnDesfazer) {
+        btnDesfazer.textContent = 'Salvar Jogo';
+        btnDesfazer.disabled = false;
+
+        // Remove os eventos anteriores de 'desfazer' e adiciona a exportação
+        btnDesfazer.onclick = exportarPartidaJSON;
+    }
+    //atualizarBotaoDesfazer(); edit: botão retirado
 
     const btnDesistir = document.getElementById('btn-desistir');
     if (btnDesistir) {
@@ -339,4 +356,39 @@ function atualizarBotaoDesfazer() {
     if (btnDesfazer) {
         btnDesfazer.disabled = !(estadoJogo.podeDesfazer && estadoJogo.oportunidade > 0);
     }
+}
+
+// Função para disparar o download do arquivo JSON
+export function exportarPartidaJSON() {
+    if (!estadoJogo.historicoLista || estadoJogo.historicoLista.length === 0) return;
+
+    const dadosJogo = {
+        data: new Date().toISOString(),
+        dificuldade: estadoJogo.nivelDificuldade,
+        corJogador: estadoJogo.corJogador,
+        movimentos: estadoJogo.historicoLista
+    };
+
+    const blob = new Blob([JSON.stringify(dadosJogo, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chessfish-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Atualizar o botão de desfazer para salvar no fim de jogo
+export function alternarBotaoParaSalvar() {
+    const btnDesfazer = document.getElementById('btn-desfazer');
+    if (!btnDesfazer) return;
+
+    btnDesfazer.textContent = 'Salvar Jogo';
+    btnDesfazer.disabled = false;
+
+    // Remove listeners antigos e atribui o evento de download
+    const novoBtn = btnDesfazer.cloneNode(true);
+    btnDesfazer.parentNode.replaceChild(novoBtn, btnDesfazer);
+    novoBtn.addEventListener('click', exportarPartidaJSON);
 }

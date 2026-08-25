@@ -1,4 +1,6 @@
-/* Geral / Reset */
+/* ==========================================================================
+   1. RESET & ESTILOS GERAIS
+   ========================================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -15,10 +17,12 @@ body {
     font-family: sans-serif;
 }
 
-/* Cabeçalho Principal */
+/* ==========================================================================
+   2. CABEÇALHO PRINCIPAL
+   ========================================================================== */
 .cabecalho-principal {
     width: 100%;
-    box-shadow: 0 0 15px 1px black;
+    box-shadow: 0 0 15px 1px #000000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,7 +35,6 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 0;
-    box-sizing: border-box;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
@@ -47,30 +50,11 @@ body {
     font-weight: lighter;
 }
 
-.btn-audio {
-    background-color: #2b2b2b;
-    border: 1px solid #444;
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: background-color 0.2s, transform 0.2s;
-}
-
-.btn-audio:hover {
-    background-color: #3d3d3d;
-    transform: scale(1.05);
-}
-
+#btn-settings,
 .about-btn {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
     background-color: #262626;
     color: #e5e5e5;
     border: 1px solid #404040;
@@ -83,17 +67,20 @@ body {
     transition: background-color 0.2s ease;
 }
 
+#btn-settings:hover,
 .about-btn:hover {
     background-color: #404040;
 }
 
 .about-icon {
-    color: #10b981;
+    color: #108860;
     font-weight: bold;
     font-family: monospace;
 }
 
-/* Painel de Comentários da IA */
+/* ==========================================================================
+   3. PAINEL DE COMENTÁRIOS DA IA
+   ========================================================================== */
 .painel-comentario {
     display: flex;
     align-items: center;
@@ -105,10 +92,7 @@ body {
     border-left: 4px solid #4d8c42;
     border-radius: 6px;
     padding: 2px 15px;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-    margin-bottom: 1em;
+    margin: 15px 0 1em 0;
 }
 
 .img-fish {
@@ -116,9 +100,6 @@ body {
     height: 36px;
     object-fit: contain;
     animation: pulp 2s infinite alternate-reverse;
-    position: static;
-    left: 0;
-    top: 20px;
 }
 
 .wrapper-text-comentario {
@@ -126,7 +107,6 @@ body {
     flex-direction: column;
     height: 90%;
     width: 100%;
-    overflow-y: hidden;
     overflow-y: scroll;
     scroll-behavior: smooth;
     scrollbar-width: none;
@@ -139,7 +119,6 @@ body {
 }
 
 #texto-comentario {
-    display: block;
     margin: auto 0;
     font-size: 0.85rem;
     color: #e0e0e0;
@@ -151,7 +130,9 @@ body {
     font-weight: 700;
 }
 
-/* Container do Jogo e Cronômetro */
+/* ==========================================================================
+   4. ESTRUTURA DO JOGO E CRONÔMETRO
+   ========================================================================== */
 .game-container {
     display: flex;
     flex-direction: column;
@@ -178,7 +159,7 @@ body {
 }
 
 .saldo {
-    color: white;
+    color: #ffffff;
 }
 
 .timer-conteiner {
@@ -186,7 +167,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #2d2d35;
-    color: #aaa;
+    color: #aaaaaa;
     padding: 10px 15px;
     border-radius: 4px;
     font-family: 'Courier New', Courier, monospace;
@@ -198,7 +179,7 @@ body {
 
 .timer-conteiner.ativo {
     background-color: #262522;
-    color: #fff;
+    color: #ffffff;
     box-shadow: 0 0 10px rgba(186, 202, 68, 0.4);
     border-left: 5px solid #baca44;
 }
@@ -210,7 +191,6 @@ body {
     animation: pulsarPerigo 1s infinite alternate;
 }
 
-/* Painel de Peças Capturadas */
 .painel-pecas {
     display: flex;
     flex-wrap: wrap;
@@ -219,16 +199,17 @@ body {
     background-color: #f3f1f1;
     border-radius: 6px;
     width: fit-content;
-    box-sizing: border-box;
 }
 
 .peca-capturada {
     font-size: 26px;
-    opacity: .4;
+    opacity: 0.4;
     transition: transform 0.15s ease-in-out;
 }
 
-/* Tabuleiro, Casas e Peças */
+/* ==========================================================================
+   5. TABULEIRO, CASAS E PEÇAS
+   ========================================================================== */
 .tabuleiro {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -240,6 +221,12 @@ body {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
+.tabuleiro-analise {
+    filter: sepia(0.35) hue-rotate(180deg) contrast(1.05);
+    border: 3px solid #3b82f6 !important;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    transition: filter 0.3s ease, border-color 0.3s ease;
+}
 
 .casa {
     display: flex;
@@ -250,24 +237,11 @@ body {
     position: relative;
 }
 
-.casa.clara {
-    background-color: #eef7ec;
-}
-
-.casa.escura {
-    background-color: #a59769;
-}
-
-.casa.selecionada {
-    background-color: #baca44 !important;
-}
-.casa-origem {
-    background-color: rgba(255, 250, 205, 0.767) !important;
-}
-
-.casa-destino {
-    background-color: rgba(255, 245, 175, 0.40) !important;
-}   
+.casa.clara { background-color: #eef7ec; }
+.casa.escura { background-color: #a59769; }
+.casa.selecionada { background-color: #baca44 !important; }
+.casa-origem { background-color: rgba(255, 250, 205, 0.77) !important; }
+.casa-destino { background-color: rgba(255, 245, 175, 0.40) !important; }
 
 .rotulo-coordenada {
     position: absolute;
@@ -278,23 +252,11 @@ body {
     opacity: 0.7;
 }
 
-.rotulo-linha {
-    top: 2px;
-    left: 4px;
-}
+.rotulo-linha { top: 2px; left: 4px; }
+.rotulo-coluna { bottom: 2px; right: 4px; }
 
-.rotulo-coluna {
-    bottom: 2px;
-    right: 4px;
-}
-
-.casa.clara .rotulo-coordenada {
-    color: #b58863;
-}
-
-.casa.escura .rotulo-coordenada {
-    color: #f0d9b5;
-}
+.casa.clara .rotulo-coordenada { color: #b58863; }
+.casa.escura .rotulo-coordenada { color: #f0d9b5; }
 
 .indicador-movimento {
     width: 24px;
@@ -309,9 +271,8 @@ body {
 .casa:has(.peca) .indicador-movimento {
     width: 40%;
     height: 40%;
-    background-color: rgba(235, 13, 13, 0.788);
-    box-shadow: rgba(255, 0, 0, 0.658) 0px 0px 12px 10px;
-    border-radius: 50%;
+    background-color: rgba(235, 13, 13, 0.79);
+    box-shadow: rgba(255, 0, 0, 0.66) 0px 0px 12px 10px;
     z-index: 0;
 }
 
@@ -324,14 +285,29 @@ body {
 .peca {
     font-size: 8vmin;
     cursor: pointer;
-    display: block;
     line-height: 1;
     transition: transform 0.15s ease;
 }
-
-.peca:hover {
-    transform: scale(1.15);
+/* Transição suave para o movimento */
+.peca-animando {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 100 !important; 
 }
+/* Animação de impacto/tremida exclusiva para a peça */
+@keyframes impactoPeca {
+    0% { transform: scale(1) translate(0, 0); }
+    30% { transform: scale(1.18) rotate(-4deg); }
+    60% { transform: scale(0.92) rotate(3deg); }
+    80% { transform: scale(1.05) rotate(-1deg); }
+    100% { transform: scale(1) translate(0, 0); }
+}
+
+.impacto-peca {
+    animation: impactoPeca 0.2s cubic-bezier(0.104, 0.87, 0.99, 0.97);
+    z-index: 10;
+}
+
+.peca:hover { transform: scale(1.15); }
 
 .peca.preta {
     color: #262522;
@@ -344,7 +320,9 @@ body {
     filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.4));
 }
 
-/* Controles do Jogo */
+/* ==========================================================================
+   6. CONTROLES DO JOGO
+   ========================================================================== */
 .game-controls {
     display: flex;
     justify-content: space-evenly;
@@ -391,7 +369,9 @@ body {
     box-shadow: none;
 }
 
-/* Estrutura Base de Modais */
+/* ==========================================================================
+   7. MODAIS - BASE COMPARTILHADA
+   ========================================================================== */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -414,284 +394,6 @@ body {
     display: none !important;
 }
 
-.modal-conteudo {
-    background-color: #1a1a1a;
-    background-image:
-        linear-gradient(rgba(7, 7, 7, 0.915), rgba(36, 39, 41, 0.692)),
-        url("../img/wp.jpg");
-    background-size: 350px;
-    background-position: 50%;
-    padding: 30px;
-    border-radius: 12px;
-    text-align: center;
-    color: #ffffff;
-    box-shadow: 0 0 10px 4px #10b98134;
-}
-
-.modal-conteudo h2 {
-    margin-bottom: 20px;
-    font-family: sans-serif;
-}
-
-/* Modal de Seleção de Cor */
-#modal-selecao-cor.fade-out {
-    opacity: 0;
-    visibility: hidden;
-}
-
-#modal-selecao-cor {
-    opacity: 1;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-
-}
-
-.opcoes-cor {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
-
-.btn-cor {
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-    backdrop-filter: blur(3px)
-}
-
-.btn-cor:hover {
-    transform: scale(1.05);
-}
-
-.btn-cor.branca {
-    background-color:  #fdfcfb63;
-    color: #ffffff;
-}
-
-.btn-cor.preta {
-    background-color: #49705654;
-    color: #ffffff;
-}
-
-/* Modal de Dificuldade */
-#modal-dificuldade {
-    opacity: 1;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-
-}
-
-#modal-dificuldade.fade-out {
-    opacity: 0;
-    visibility: hidden;
-}
-
-#modal-dificuldade .modal-conteudo {
-    background-image:
-        linear-gradient(rgba(7, 7, 7, 0.983), rgba(26, 24, 24, 0.777)),
-        url("../img/wp.jpg");
-    background-size: 800px;
-    background-repeat: no-repeat;
-    background-position: 20% 140%;
-    border-radius: 12px;
-    padding: 28px 24px;
-    max-width: 460px;
-    width: 100%;
-    color: #ffffff;
-}
-
-#modal-dificuldade h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #d4d3d1;
-    margin-bottom: 12px;
-}
-
-#modal-dificuldade .modal-conteudo>span:not(.elo) {
-    text-align: left;
-    display: block;
-    font-size: 0.85rem;
-    line-height: 1.45;
-    color: #cccccc;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.opcoes-dificuldade,
-#modal-dificuldade .opcoes-dificuldade {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-}
-
-.btn-opcao {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 14px 20px;
-    font-family: inherit;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
-}
-
-.btn-opcao:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-#modal-dificuldade .btn-dificuldade {
-    position: relative;
-    background-color: #181f1a71;
-    border-radius: 8px;
-    padding: 12px 16px;
-    border: 1px solid #3a3d3c;
-    display: flex;
-    height: 90px;
-    flex-direction: column;
-    align-items: flex-start;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-}
-
-#modal-dificuldade .btn-dificuldade strong {
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: #b9a67f !important;
-    margin-bottom: 4px;
-    transition: color 0.2s ease;
-}
-
-#modal-dificuldade .btn-dificuldade span:not(.elo) {
-    font-size: 0.8rem;
-    color: #c7c2c2;
-    transition: color 0.2s ease;
-    text-align: left;
-    font-weight: 700;
-}
-
-#modal-dificuldade .btn-dificuldade .elo {
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: #b9a67f;
-    margin-top: 6px;
-    transition: color 0.2s ease;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-}
-
-#modal-dificuldade .btn-dificuldade:hover span:not(.elo) {
-    color: white;
-}
-
-/* Modal de Fim de Jogo */
-
-.modal-derrota {
-    width: 300px;
-    overflow: hidden;
-    padding: 32px 24px;
-    border-radius: 16px;
-    color: #eeeded;
-    text-align: right;
-    background-color: #000000;
-    background-image:
-        linear-gradient(to left, #060606fe, rgba(4, 4, 4, 0.937), #0000004f),
-        url("../img/wp.jpg");
-
-    background-size: cover;
-    background-position: 100% 0px, -90px 90%;
-    background-repeat: no-repeat;
-    box-shadow: 0 2px 12px 4px rgba(53, 99, 16, 0.616);
-    filter: grayscale(55%);
-    border: 2px solid rgba(38, 67, 15, 0.978);
-    
-
-}
-
-#modal-fim-de-jogo h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.947);
-}
-
-#descricao-fim-de-jogo {
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin-bottom: 24px;
-    font-weight: 800;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.7);
-}
-
-/* Botão de Ação */
-#modal-fim-de-jogo .btn-action {
-    color: #ffffff;
-    border: 1px solid #555555;
-    padding: 10px 28px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(39, 67, 13, 0.74);
-    transition: all 0.2s ease;
-    background-color: #2d552639 !important;
-    backdrop-filter: blur(2px);
-}
-
-.modal-vitoria {
-    width: 300px;
-    overflow: hidden;
-    padding: 32px 24px;
-    border-radius: 16px;
-    color: white;
-    text-align: left;
-    background-color: #000000f9;
-    background-image:
-        linear-gradient(to right, #000000, rgba(0, 0, 0, 0.512), #00000000),
-        url("../img/rei.jpg");
-    border: 2px solid #9b9b52b4;
-    background-size: 190px;
-    background-position: right, right;
-    background-repeat: no-repeat;
-    max-width: 600px;
-    box-shadow: 0 0 32px 5px rgba(201, 178, 101, 0.384), 0 10px 25px rgba(0, 0, 0, 0.425);
-}
-
-.modal-empate {
-    position: relative;
-    overflow: hidden;
-    padding: 32px 24px;
-    border-radius: 16px;
-    color: white;
-    text-align: center;
-    background-color: #000000;
-    background-image:
-        radial-gradient(circle at 50% 80%, rgba(28, 29, 28, 0.671), rgba(0, 0, 0, 0.999) 90%),
-        url('../img/wp.jpg');
-    background-repeat: no-repeat;
-    background-size: 400px;
-}
-
-/* Modal Sobre (About) */
-.modal-card {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    background-color: #171717;
-    border: 1px solid #262626;
-    border-radius: 16px;
-    padding: 24px;
-    color: #d4d4d4;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
 .modal-close-btn {
     position: absolute;
     top: 16px;
@@ -709,30 +411,260 @@ body {
     color: #ffffff;
 }
 
-.modal-header h2 {
+/* ==========================================================================
+   8. MODAIS DE FLUXO DE JOGO (Cor, Dificuldade, Fim de Jogo)
+   ========================================================================== */
+.modal-conteudo {
+    background-color: #1a1a1a;
+    background-image: linear-gradient(rgba(7, 7, 7, 0.95), rgba(36, 39, 41, 0.69)), url("../img/wp.jpg");
+    background-size: 350px;
+    background-position: 50%;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 0 10px 4px #10b98134;
+}
+.modal-conteudo>span>strong{
+    color: #10b981;
+}
+
+/* Seleção de Cor */
+#modal-selecao-cor {
+    opacity: 1;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#modal-selecao-cor.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.opcoes-cor {
+    display: flex;
+    gap: 15px;
+    margin-top: 1.3em;
+    justify-content: center;
+}
+
+.btn-cor {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    backdrop-filter: blur(3px);
+}
+
+.btn-cor:hover { transform: scale(1.05); }
+.btn-cor.branca { background-color: #fdfcfb63; color: #ffffff; }
+.btn-cor.preta { background-color: #49705654; color: #ffffff; }
+
+/* Seleção de Dificuldade */
+#modal-dificuldade {
+    opacity: 1;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#modal-dificuldade.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#modal-dificuldade .modal-conteudo {
+    background-image: linear-gradient(rgba(7, 7, 7, 0.98), rgba(26, 24, 24, 0.77)), url("../img/wp.jpg");
+    background-size: 800px;
+    background-repeat: no-repeat;
+    background-position: 20% 140%;
+    padding: 28px 24px;
+    max-width: 460px;
+    width: 100%;
+}
+
+#modal-dificuldade h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d4d3d1;
+    margin-bottom: 12px;
+}
+
+#modal-dificuldade .modal-conteudo > span:not(.elo) {
+    display: block;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #cccccc;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.opcoes-dificuldade {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+#modal-dificuldade .btn-dificuldade {
+    position: relative;
+    background-color: #181f1a71;
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid #3a3d3c;
+    display: flex;
+    height: 90px;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#modal-dificuldade .btn-dificuldade:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#modal-dificuldade .btn-dificuldade strong {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #b9a67f !important;
+    margin-bottom: 4px;
+}
+
+#modal-dificuldade .btn-dificuldade span:not(.elo) {
+    font-size: 0.8rem;
+    color: #c7c2c2;
+    text-align: left;
+    font-weight: 700;
+}
+
+#modal-dificuldade .btn-dificuldade .elo {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #b9a67f;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+#modal-dificuldade .btn-dificuldade:hover span:not(.elo) {
+    color: #ffffff;
+}
+
+/* Fim de Jogo (Vitória, Derrota, Empate) */
+.modal-derrota {
+    width: 300px;
+    padding: 32px 24px;
+    border-radius: 16px;
+    color: #eeeded;
+    text-align: right;
+    background-color: #000000;
+    background-image: linear-gradient(to left, #060606fe, rgba(4, 4, 4, 0.93), #0000004f), url("../img/wp.jpg");
+    background-size: cover;
+    background-position: 100% 0px, -90px 90%;
+    background-repeat: no-repeat;
+    box-shadow: 0 2px 12px 4px rgba(53, 99, 16, 0.61);
+    filter: grayscale(55%);
+    border: 2px solid rgba(38, 67, 15, 0.97);
+}
+
+.modal-vitoria {
+    width: 300px;
+    padding: 32px 24px;
+    border-radius: 16px;
+    color: #ffffff;
+    text-align: left;
+    background-color: #000000f9;
+    background-image: linear-gradient(to right, #000000, rgba(0, 0, 0, 0.51), #00000000), url("../img/rei.jpg");
+    border: 2px solid #9b9b52b4;
+    background-size: 190px;
+    background-position: right;
+    background-repeat: no-repeat;
+    max-width: 600px;
+    box-shadow: 0 0 32px 5px rgba(201, 178, 101, 0.38), 0 10px 25px rgba(0, 0, 0, 0.42);
+}
+
+.modal-empate {
+    padding: 32px 24px;
+    border-radius: 16px;
+    color: #ffffff;
+    text-align: center;
+    background-color: #000000;
+    background-image: radial-gradient(circle at 50% 80%, rgba(28, 29, 28, 0.67), rgba(0, 0, 0, 0.99) 90%), url('../img/wp.jpg');
+    background-repeat: no-repeat;
+    background-size: 400px;
+}
+
+#modal-fim-de-jogo h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.94);
+}
+
+#descricao-fim-de-jogo {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+#modal-fim-de-jogo .btn-action {
+    color: #ffffff;
+    border: 1px solid #555555;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(39, 67, 13, 0.74);
+    background-color: #2d552639 !important;
+    backdrop-filter: blur(2px);
+}
+
+/* ==========================================================================
+   9. MODAL SOBRE (ABOUT)
+   ========================================================================== */
+.modal-card-about {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    background-color: #171717;
+    border: 1px solid #262626;
+    border-radius: 16px;
+    padding: 24px;
+    color: #d4d4d4;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modal-card-about .modal-header h2 {
     margin: 0;
     font-size: 24px;
     color: #ffffff;
 }
 
-.modal-subtitle {
-    margin: 4px 0 0 0;
+.modal-card-about .modal-subtitle {
+    margin-top: 4px;
     font-size: 12px;
     color: #a3a3a3;
 }
 
-.modal-body {
+.modal-card-about .modal-body {
     margin-top: 20px;
     font-size: 14px;
     line-height: 1.6;
 }
 
-.modal-body p {
+.modal-card-about .modal-body p {
     margin-bottom: 12px;
 }
 
-#modal-dificuldade .modal-conteudo strong,
-.modal-body p strong {
+.modal-card-about .modal-body p strong {
     font-weight: 900;
     color: #10b981;
 }
@@ -749,9 +681,7 @@ body {
     font-size: 12px;
 }
 
-.audio-icon {
-    font-size: 16px;
-}
+.audio-icon { font-size: 16px; }
 
 .audio-info {
     display: flex;
@@ -772,9 +702,7 @@ body {
     font-weight: 500;
 }
 
-.audio-link:hover {
-    text-decoration: underline;
-}
+.audio-link:hover { text-decoration: underline; }
 
 .modal-footer {
     margin-top: 24px;
@@ -785,28 +713,157 @@ body {
     align-items: center;
     font-size: 12px;
     color: #737373;
-    cursor: pointer;
 }
 
 .github-link {
     color: #34d399;
     text-decoration: none;
     font-weight: 500;
+}
+
+.github-link:hover { text-decoration: underline; }
+
+/* ==========================================================================
+   10. MODAL DE CONFIGURAÇÕES (SETTINGS)
+   ========================================================================== */
+.modal-card-settings {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    background-color: #171717;
+    border: 1px solid #262626;
+    border-radius: 16px;
+    padding: 24px;
+    color: #d4d4d4;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modal-card-settings .modal-header {
+    margin-bottom: 24px;
+}
+
+.modal-card-settings .modal-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px 0;
+}
+
+.modal-card-settings .modal-subtitle {
+    font-size: 0.85rem;
+    color: #8e8e93;
+    margin: 0;
+}
+
+.modal-card-settings .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #262626;
+    border: 1px solid #333333;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.setting-item.vertical {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.setting-item label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #d1d1d6;
+}
+
+.setting-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#music-volume-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #34d399;
+}
+
+/* Switch Toggle (SFX) */
+#sfx-toggle {
+    appearance: none;
+    width: 44px;
+    height: 24px;
+    background-color: #3a3a44;
+    border-radius: 12px;
+    position: relative;
     cursor: pointer;
+    outline: none;
+    transition: background-color 0.25s ease;
 }
 
-.github-link:hover {
-    text-decoration: underline;
+#sfx-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #413f3f;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Rodapé da Página */
+#sfx-toggle:checked {
+    background-color: #34d399;
+}
+
+#sfx-toggle:checked::after {
+    transform: translateX(20px);
+}
+
+/* Range Input (Volume) */
+input[type="range"]#music-volume {
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background-color: #3a3a44;
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]#music-volume::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #34d399;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(94, 255, 0, 0.4);
+    transition: transform 0.15s ease;
+}
+
+input[type="range"]#music-volume::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+/* ==========================================================================
+   11. RODAPÉ DA PÁGINA
+   ========================================================================== */
 .rodape-creditos {
     margin-top: 20px;
     padding: 12px 0;
     text-align: center;
     font-size: 0.9rem;
     color: #aaaaaa;
-    font-family: inherit;
 }
 
 .rodape-creditos a {
@@ -821,26 +878,22 @@ body {
     text-decoration: underline;
 }
 
-/* Animações e Keyframes */
+/* ==========================================================================
+   12. ANIMAÇÕES
+   ========================================================================== */
 @keyframes pulp {
-    0% {
-        box-shadow: rgba(0, 128, 0, 0.569) 0 0 25px 2px;
-    }
-
-    100% {}
+    0% { box-shadow: rgba(0, 128, 0, 0.57) 0 0 25px 2px; }
+    100% { box-shadow: none; }
 }
 
 @keyframes pulsarPerigo {
-    0% {
-        box-shadow: 0 0 5px 2px rgba(220, 53, 69, 0.4);
-    }
-
-    100% {
-        box-shadow: 0 0 5px 2px rgba(220, 53, 69, 0.8);
-    }
+    0% { box-shadow: 0 0 5px 2px rgba(220, 53, 69, 0.4); }
+    100% { box-shadow: 0 0 5px 2px rgba(220, 53, 69, 0.8); }
 }
 
-/* Media Queries (Responsividade) */
+/* ==========================================================================
+   13. MEDIA QUERIES (RESPONSIVIDADE)
+   ========================================================================== */
 @media (min-width: 600px) {
     .peca {
         font-size: 55px;

@@ -8,10 +8,12 @@ import {
     estadoJogo,
     iniciarJogo,
     desfazerJogada,
-    desistirPartida
+    desistirPartida,
+    atualizarTela,
 } from './controller/gameController.js';
+import { iniciarModoAnalise } from './controller/analisysController.js';
 
-// Elements da DOM para Modais e Seleção
+// Elementos da DOM para Modais e Seleção
 const nivelTitulo = document.getElementById('nivel-titulo');
 const modalCor = document.getElementById('modal-selecao-cor');
 const modalDificuldade = document.getElementById('modal-dificuldade');
@@ -85,12 +87,12 @@ function configurarModalAbout() {
 
     const openModal = () => {
         modalAbout.classList.remove('hidden');
-        modalSettings.setAttribute('aria-hidden', 'false');
+        modalAbout.setAttribute('aria-hidden', 'false');
     };
 
     const closeModal = () => {
         modalAbout.classList.add('hidden');
-        modalSettings.setAttribute('aria-hidden', 'true');
+        modalAbout.setAttribute('aria-hidden', 'true');
     };
 
     btnAbout.addEventListener('click', openModal);
@@ -101,11 +103,12 @@ function configurarModalAbout() {
     });
 }
 
-//-------------MODAL SETTINGS----------------//
+//------------- MODAL SETTINGS & IMPORTAÇÃO ----------------//
 function configurarModalSettings() {
     const btnSettings = document.getElementById('btn-settings');
     const modalSettings = document.getElementById('modal-settings');
     const btnCloseSettings = document.getElementById('btn-close-setings');
+    const btnImportar = modalSettings?.querySelector('.btn-action');
 
     const sfxToggle = document.getElementById('sfx-toggle');
     const musicVolume = document.getElementById('music-volume');
@@ -113,24 +116,7 @@ function configurarModalSettings() {
 
     if (!modalSettings) return;
 
-    // Sincroniza os inputs da interface com os valores salvos no localStorage
-    const configs = obterConfiguracoesAudio();
-    if (sfxToggle) sfxToggle.checked = configs.sfxAtivo;
-    if (musicVolume) musicVolume.value = configs.volumePercentual;
-    if (musicVolumeValue) musicVolumeValue.textContent = `${configs.volumePercentual}%`;
-
-    // Listeners dos Controles
-    sfxToggle?.addEventListener('change', (e) => {
-        setSFXAtivo(e.target.checked);
-    });
-
-    musicVolume?.addEventListener('input', (e) => {
-        const valor = e.target.value;
-        if (musicVolumeValue) musicVolumeValue.textContent = `${valor}%`;
-        setVolumeMusica(valor);
-    });
-
-    // Funções de Abrir/Fechar Modal
+    // Funções de Controle do Modal
     const openModal = () => {
         modalSettings.classList.remove('hidden');
         modalSettings.setAttribute('aria-hidden', 'false');
@@ -141,6 +127,55 @@ function configurarModalSettings() {
         modalSettings.setAttribute('aria-hidden', 'true');
     };
 
+    // Sincroniza os inputs da interface com os valores salvos
+    const configs = obterConfiguracoesAudio();
+    if (sfxToggle) sfxToggle.checked = configs.sfxAtivo;
+    if (musicVolume) musicVolume.value = configs.volumePercentual;
+    if (musicVolumeValue) musicVolumeValue.textContent = `${configs.volumePercentual}%`;
+
+    // Listeners de Áudio
+    sfxToggle?.addEventListener('change', (e) => {
+        setSFXAtivo(e.target.checked);
+    });
+
+    musicVolume?.addEventListener('input', (e) => {
+        const valor = e.target.value;
+        if (musicVolumeValue) musicVolumeValue.textContent = `${valor}%`;
+        setVolumeMusica(valor);
+    });
+
+    // Importação de partida JSON para análise
+    btnImportar?.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (evento) => {
+                try {
+                    const dadosJogo = JSON.parse(evento.target.result);
+                    closeModal();
+
+                    // Congela a sessão ativa e passa o callback para restaurar o tabuleiro
+                    iniciarModoAnalise(dadosJogo, estadoJogo, () => {
+                        atualizarTela()
+                    });
+                } catch (err) {
+                    alert('Erro ao ler o arquivo JSON de análise.');
+                    console.log(err)
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        input.click();
+    });
+
+    // Listeners de Abertura/Fechamento
     btnSettings?.addEventListener('click', openModal);
     btnCloseSettings?.addEventListener('click', closeModal);
 

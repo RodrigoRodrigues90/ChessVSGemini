@@ -80,17 +80,18 @@
 
 <!-- modal de settings -->
 <div id="modal-settings" class="modal-overlay hidden" aria-hidden="true">
-    <div class="modal-card">
+    <div class="modal-card-settings">
 
         <button id="btn-close-setings" class="modal-close-btn" aria-label="Fechar">✕</button>
 
         <div class="modal-header">
-            <h2>Configurações</h2>
+            <h2>Settings</h2>
+            <p class="modal-subtitle">Configurações de volume / Importação de jogo salvo </p>
         </div>
 
         <div class="modal-body">
             <div class="setting-item">
-                <label for="sfx-toggle">Efeitos Sonoros (SFX)</label>
+                <label for="sfx-toggle">Efeitos Sonoros</label>
                 <input type="checkbox" id="sfx-toggle" checked>
             </div>
 
@@ -101,13 +102,20 @@
                 </div>
                 <input type="range" id="music-volume" min="0" max="100" value="80">
             </div>
+            <div class="setting-item vertical">
+                <div class="setting-label-row">
+                    <label>Partida Salva</label>
+                    <span class="modal-subtitle">.json</span>
+                </div>
+                <button class="btn-action">Importar Jogo</button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Modal Sobre o Projeto -->
 <div id="modal-about" class="modal-overlay hidden" aria-hidden="true">
-    <div class="modal-card">
+    <div class="modal-card-about">
 
         <!-- Botão Fechar -->
         <button id="btn-close-about" class="modal-close-btn" aria-label="Fechar">✕</button>
@@ -189,7 +197,7 @@
             <div class="wrapper-buttons-header">
                 <button id="btn-about" class="about-btn">
                     <span class="about-icon">ℹ</span>
-                </button>               
+                </button>
                 <button id="btn-settings" class="icon-btn">⚙️</button>
             </div>
         </div>
@@ -240,6 +248,16 @@
             </svg>
             Desistir
         </button>
+    </div>
+    <!-- Painel de Navegação do Modo Análise -->
+    <div id="painel-analise" class="game-controls modal-oculto">
+        <button id="btn-primeiro-lance" class="btn-action" title="Primeiro Lance">|&lt;</button>
+        <button id="btn-lance-anterior" class="btn-action" title="Lance Anterior">&lt;</button>
+        <span id="indicador-lance-analise" style="color: #ffffff; font-weight: bold; font-size: 0.9rem;">0 / 0</span>
+        <button id="btn-proximo-lance" class="btn-action" title="Próximo Lance">&gt;</button>
+        <button id="btn-ultimo-lance" class="btn-action" title="Último Lance">&gt;|</button>
+        <button id="btn-sair-analise" class="btn-action"
+            title="Sair da Análise">Sair</button>
     </div>
 
     <!-- Rodapé do Projeto -->
