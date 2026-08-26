@@ -1,6 +1,6 @@
 import { Tabuleiro } from '../core/tabuleiro.js';
-import { algebraicoParaCoord } from '../core/notations.js';
-import { renderizarTabuleiro } from '../UI/ui.js';
+import { algebraicoParaCoord, gerarFEN } from '../core/notations.js';
+import { removerSetaOrientacao, renderizarTabuleiro, desenharSetaOrientacao } from '../UI/ui.js';
 import { relogio } from './gameController.js';
 
 let sessaoOriginalPausada = null;
@@ -50,11 +50,70 @@ export function iniciarModoAnalise(dadosJSON, estadoJogoOriginal, callbackRestau
     irParaLance(0);
 }
 
-function atualizarComentarioAnalise() {
+// Cache para evitar requisições repetidas para a mesma FEN
+const cacheAnalise = new Map();
+let temporizadorDebounce = null;
+
+/**
+ * Busca a melhor jogada via Stockfish com debounce e cache
+ * @param {string} fen - Posição atual do tabuleiro
+ * @param {function} callbackSucesso - Função executada com os dados da API
+ * @param {number} atrasoMs - Tempo de espera do debounce (padrão 200ms)
+ */
+export function buscarMelhorLanceComDebounce(fen, callbackSucesso, atrasoMs = 200) {
+    // 1. Cancela a requisição pendente anterior se o usuário clicou de novo rápido
+    if (temporizadorDebounce) {
+        clearTimeout(temporizadorDebounce);
+    }
+
+    // 2. Verifica se o resultado já está no cache local
+    if (cacheAnalise.has(fen)) {
+        callbackSucesso(cacheAnalise.get(fen));
+        return;
+    }
+
+    // 3. Agenda a chamada de API após o tempo de espera
+    temporizadorDebounce = setTimeout(async () => {
+        try {
+            const resposta = await fetch('https://chess-stockfish-iota.vercel.app/api/jogada-ia', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fen: fen,
+                    level: 20,
+                    historico: historicoAnalise
+                })
+            });
+
+            if (!resposta.ok) throw new Error('Falha ao obter análise');
+
+            const dados = await resposta.json();
+
+            // Salva no cache
+            cacheAnalise.set(fen, dados);
+
+            // Retorna os dados para a UI
+            if (typeof callbackSucesso === 'function') {
+                callbackSucesso(dados);
+            }
+        } catch (erro) {
+            console.error('Erro na análise da IA:', erro);
+        }
+    }, atrasoMs);
+}
+
+function atualizarComentarioAnalise(lance) {
     const elComentario = document.getElementById('texto-comentario');
     if (elComentario) {
         elComentario.innerHTML = `
-            <span style="color: #3b82f6; font-weight: bold;">🔍 MODO ANÁLISE</span><br>
+            <span style="color: #3b82f6; font-weight: bold;">🔍 MODO ANÁLISE</span><br><br>
+            Buscando lances...
+        `;
+    }
+    if (lance) {
+        elComentario.innerHTML = `
+            <span style="color: #3b82f6; font-weight: bold;">🔍 MODO ANÁLISE</span><br><br>
+            Melhor lance: ${lance}
         `;
     }
 }
@@ -85,6 +144,17 @@ export function irParaLance(indice) {
     // Renderiza a posição considerando a perspectiva e sem seleção ativa
     renderizarTabuleiro(tabuleiroAnalise, corPerspectivaAnalise);
     atualizarUIAnalise();
+    buscarMelhorLanceComDebounce(gerarFEN(tabuleiroAnalise), (analise) => {
+        if (analise && analise.movimento) {
+            // Atualiza o painel com a sugestão do motor
+            exibirMelhorLanceNaUI(analise.movimento);
+        }
+    }, 200);
+}
+
+function exibirMelhorLanceNaUI(lance) {
+    atualizarComentarioAnalise(lance);
+    desenharSetaOrientacao(lance, corPerspectivaAnalise);
 }
 
 /**
@@ -155,6 +225,9 @@ export function encerrarAnalise() {
     }
     // volta a contar o tempo
     if (relogio && typeof relogio.iniciar === 'function') {
-            relogio.iniciar();
-        }
+        relogio.iniciar();
+    }
+
+    cacheAnalise.clear();
+    removerSetaOrientacao();
 }

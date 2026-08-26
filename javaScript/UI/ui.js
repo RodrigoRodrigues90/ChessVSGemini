@@ -1,4 +1,4 @@
-import { desenharCoordenadas } from '../core/notations.js';
+import { desenharCoordenadas, algebraicoParaCoord } from '../core/notations.js';
 
 export const UNICODE_PECAS = {
     'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟',
@@ -164,4 +164,91 @@ function dispararImpactoNaPeca(elPeca) {
     setTimeout(() => {
         elPeca.classList.remove('impacto-peca');
     }, 200);
+}
+
+/**
+ * Desenha uma seta SVG sobre o tabuleiro indicando a origem e destino do movimento.
+ * @param {string} uci - Movimento no formato "e2e4"
+ * @param {string} perspectiva - 'w' para brancas em baixo, 'b' para pretas em baixo
+ */
+export function desenharSetaOrientacao(uci, perspectiva = 'w') {
+    const elTabuleiro = document.getElementById('tabuleiro');
+    if (!elTabuleiro || !uci || uci.length < 4) return;
+
+    removerSetaOrientacao();
+
+    const orig = algebraicoParaCoord(uci.substring(0, 2));
+    const dest = algebraicoParaCoord(uci.substring(2, 4));
+
+    const offsetX = 0.6;
+    const offsetY = 0.0;
+    // Calcula os centros das casas de origem e destino (em %)
+    const getPos = (l, c) => {
+        const col = perspectiva === 'w' ? c : 7 - c;
+        const lin = perspectiva === 'w' ? l : 7 - l;
+        return {
+            x: col * 12.5 + 6.25 + offsetX , 
+            y: lin * 12.5 + 6.25 + offsetY
+        };
+    };
+
+    const p1 = getPos(orig.linha, orig.coluna);
+    const p2 = getPos(dest.linha, dest.coluna);
+
+    // Encurta ligeiramente a linha para que a ponta pare no centro exato da casa
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const distancia = Math.hypot(dx, dy);
+
+    // Folga em % para a ponta se encaixar no centro sem estourar a casa
+    const recuo = 2.8;
+    const p2Ajustado = {
+        x: p2.x - (dx / distancia) * recuo,
+        y: p2.y - (dy / distancia) * recuo
+    };
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('id', 'camada-setas-svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.style.position = 'absolute';
+    svg.style.top = '0';
+    svg.style.left = '0';
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.pointerEvents = 'none';
+    svg.style.zIndex = '5'; // Fica abaixo da peça mas acima do tabuleiro se ajustado no CSS
+
+    // Cor rosa com transparência estilo Lichess/Chess.com
+    const corSeta = 'rgba(255, 110, 160, 0.65)';
+
+    svg.innerHTML = `
+        <defs>
+            <marker id="cabeca-seta" 
+                    viewBox="0 0 10 10" 
+                    refX="5" 
+                    refY="5" 
+                    markerWidth="3.2" 
+                    markerHeight="3.2" 
+                    orient="auto">
+                <path d="M 0 1 L 10 5 L 0 9 L 2.5 5 z" fill="${corSeta}" />
+            </marker>
+        </defs>
+        <line x1="${p1.x}%" y1="${p1.y}%" 
+              x2="${p2Ajustado.x}%" y2="${p2Ajustado.y}%" 
+              stroke="${corSeta}" 
+              stroke-width="1.5" 
+              stroke-linecap="round" 
+              marker-end="url(#cabeca-seta)" />
+    `;
+
+    elTabuleiro.appendChild(svg);
+}
+/**
+ * Remove a camada de setas do tabuleiro
+ */
+export function removerSetaOrientacao() {
+    const camadaAnterior = document.getElementById('camada-setas-svg');
+    if (camadaAnterior) {
+        camadaAnterior.remove();
+    }
 }

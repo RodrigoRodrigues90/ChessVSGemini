@@ -222,6 +222,7 @@ body {
     overflow: hidden;
 }
 .tabuleiro-analise {
+    position: relative;
     filter: sepia(0.35) hue-rotate(180deg) contrast(1.05);
     border: 3px solid #3b82f6 !important;
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
