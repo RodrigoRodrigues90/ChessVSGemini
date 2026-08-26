@@ -13,9 +13,9 @@ const mensagensDerrota = {
     ],
 
     avancado: [
-        "Xeque-mate. Nem Kasparov venceria o peixe nesse nível." + "\n" + "Tente de novo.",
-        "Xeque-mate. Nem Bobby Fischer venceria o peixe nesse nível." + "\n" + "Tente de novo.",
-        "Xeque-mate. Magnus Carlsen talvez chegaria perto, você nunca!" + "\n" + "Tente de novo."
+        "Xeque-mate. Nem Kasparov venceria.",
+        "Xeque-mate. Nem Bobby Fischer venceria.",
+        "Xeque-mate. Magnus Carlsen talvez chegaria perto, você nunca!"
     ]
 };
 const mensagensVitoria = {

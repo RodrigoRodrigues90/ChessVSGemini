@@ -110,7 +110,7 @@ export function iniciarJogo() {
     relogio.iniciar();
 
     if (jogo.turno === estadoJogo.corIA) {
-        setTimeout(() => executarTurnoIA(), 1500);
+        setTimeout(() => executarTurnoIA(), 1000);
     }
 }
 
@@ -142,29 +142,24 @@ export function tratarCliqueCasa(linha, coluna) {
 
         const estadoFim = jogo.verificarFimDeJogo ? jogo.verificarFimDeJogo() : null;
         if (estadoFim) {
-            relogio.parar();
             atualizarTela();
             tocarSom('xequeMate');
-            setTimeout(() => {
-                finalizarPartida(estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'empate', estadoFim.tipo);
-            }, 1200);
+            finalizarPartida(estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'derrota', estadoFim.tipo);
             return;
         }
 
         //====Sons====// 
-        setTimeout(() => {
-            if (TemPecaInimiga) {
-                tocarSom('movimento');
-                tocarSom('captura');
-                registrarCaptura(TemPecaInimiga, jogoTurno);
-            } else {
-                tocarSom('movimento');
-            }
+        if (TemPecaInimiga) {
+            tocarSom('movimento');
+            tocarSom('captura');
+            registrarCaptura(TemPecaInimiga, jogoTurno);
+        } else {
+            tocarSom('movimento');
 
-            if (jogo.estaEmXeque(estadoJogo.corIA)) {
-                tocarSom('xeque');
-            }
-        }, 220);
+        }
+        if (jogo.estaEmXeque(estadoJogo.corIA)) {
+            tocarSom('xeque');
+        }
         //============//
 
         atualizarTela();
@@ -211,29 +206,26 @@ export async function executarTurnoIA() {
         jogo.moverPeca(origem.linha, origem.coluna, destino.linha, destino.coluna);
 
         //tocar som
-        setTimeout(() => {
 
-            if (pecaDestino) {
-                tocarSom('movimento')
-                tocarSom('captura');
-                registrarCaptura(pecaDestino, jogoTurno);
-            } else {
-                tocarSom('movimento');
-            }
+        if (pecaDestino) {
+            tocarSom('movimento')
+            tocarSom('captura');
+            registrarCaptura(pecaDestino, jogoTurno);
+        } else {
+            tocarSom('movimento');
+        }
 
-            if (jogo.estaEmXeque(estadoJogo.corJogador)) {
-                tocarSom('xeque')
-            };
+        if (jogo.estaEmXeque(estadoJogo.corJogador)) {
+            tocarSom('xeque')
+        };
 
-        },220);
 
         const estadoFim = jogo.verificarFimDeJogo();
         if (estadoFim) {
-            relogio.parar();
             atualizarTela();
             tocarSom('xequeMate')
             pararPensamentoIAComentario();
-            finalizarPartida(estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'empate', estadoFim.tipo);
+            finalizarPartida(estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'derrota', estadoFim.tipo);
             estadoJogo.processandoIA = false;
             return;
         }
@@ -294,6 +286,7 @@ export function desfazerJogada() {
     estadoJogo.estadoAnterior = null;
 
     atualizarBotaoDesfazer();
+    btnDesfazer.lastChild.textContent =`Desfazer Jogada(${estadoJogo.oportunidade})`
     relogio.mudarTurno ? relogio.mudarTurno(jogo.turno) : relogio.alternarTurno();
     atualizarTela();
     tocarSom('movimento');
@@ -319,7 +312,6 @@ export function finalizarPartida(resultado, motivo) {
         // Remove os eventos anteriores de 'desfazer' e adiciona a exportação
         btnDesfazer.onclick = exportarPartidaJSON;
     }
-    //atualizarBotaoDesfazer(); edit: botão retirado
 
     const btnDesistir = document.getElementById('btn-desistir');
     if (btnDesistir) {
@@ -329,7 +321,9 @@ export function finalizarPartida(resultado, motivo) {
 
     pararTyping();
     elComentario.textContent = `Fim de jogo por ${motivo.toLowerCase()} 🤝`;
-    exibirModalFimDeJogo(resultado, estadoJogo.nivelDificuldade, motivo);
+    setTimeout(() => {
+        exibirModalFimDeJogo(resultado, estadoJogo.nivelDificuldade, motivo);
+    }, 800);
 }
 
 // Animações de comentário e botões
@@ -381,13 +375,13 @@ export function exportarPartidaJSON() {
 
     const blob = new Blob([JSON.stringify(dadosJogo, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const dataFormatada = obterDataFormatada();
     const a = document.createElement('a');
     a.href = url;
     a.download = `chessfish-partida_${dataFormatada}.json`;
     a.click();
-    
+
     URL.revokeObjectURL(url);
 }
 

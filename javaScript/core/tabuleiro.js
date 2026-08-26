@@ -1,5 +1,7 @@
 // tabuleiro.js
 
+import { tocarSom } from "../service/audio.js";
+
 export class Tabuleiro {
     constructor() {
         this.jogoFinalizado = false;
@@ -55,6 +57,7 @@ export class Tabuleiro {
                 // Remove o peão inimigo capturado (que está na linha atrás/frente do alvo)
                 const linhaPeaoInimigo = cor === 'w' ? destLinha + 1 : destLinha - 1;
                 this.grid[linhaPeaoInimigo][destColuna] = '';
+                tocarSom('captura');
             }
         }
 
@@ -80,6 +83,7 @@ export class Tabuleiro {
                 this.grid[origemLinha][0] = '';
                 this.grid[origemLinha][3] = torre;
             }
+            tocarSom('captura');
         }
 
         // 4. PERDA DE DIREITOS DE ROQUE

@@ -45,7 +45,7 @@ htmlAudioElement.loop = true;
 
 const musicaSource = audioCtx.createMediaElementSource(htmlAudioElement);
 const musicaGainNode = audioCtx.createGain();
-musicaGainNode.gain.value = 0.6;
+musicaGainNode.gain.value = 1;
 musicaSource.connect(musicaGainNode);
 musicaGainNode.connect(audioCtx.destination);
 
