@@ -219,7 +219,7 @@ export function desenharSetaOrientacao(uci, perspectiva = 'w') {
     svg.style.zIndex = '5'; // Fica abaixo da peça mas acima do tabuleiro se ajustado no CSS
 
     // Cor rosa com transparência estilo Lichess/Chess.com
-    const corSeta = 'rgba(255, 110, 160, 0.65)';
+    const corSeta = 'rgba(57, 53, 58, 0.67)';
 
     svg.innerHTML = `
         <defs>
