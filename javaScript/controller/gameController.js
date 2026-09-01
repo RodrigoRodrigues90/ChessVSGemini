@@ -240,6 +240,7 @@ export async function executarTurnoIA() {
                 finalizarPartida('empate', estadoFim.tipo);
             }
             estadoJogo.processandoIA = false;
+            pararPensamentoIAComentario()
             atualizarTela()
             tocarSom('xequeMate')
             return;
