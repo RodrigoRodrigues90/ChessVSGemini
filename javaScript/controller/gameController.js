@@ -33,13 +33,13 @@ export const estadoJogo = {
 };
 
 // Instância do Relógio
+let alarmeTocado = false;
 export const relogio = new Clock(
     10,
     (dados) => {
         const DOM_TIMER_IA = document.getElementById('timer-ia');
         const DOM_TIMER_JOGADOR = document.getElementById('timer-jogador');
         const eJogadorBrancas = estadoJogo.corJogador === 'w';
-
         DOM_TIMER_JOGADOR.textContent = eJogadorBrancas ? dados.w : dados.b;
         DOM_TIMER_IA.textContent = eJogadorBrancas ? dados.b : dados.w;
 
@@ -49,6 +49,10 @@ export const relogio = new Clock(
         if (elJogador && elIA) {
             const segW = Number(dados.wSegundos);
             const segB = Number(dados.bSegundos);
+            if ((segB <= 30 || segW <= 30) && !alarmeTocado) {
+                tocarSom('alerta');
+                alarmeTocado = true;
+            }
 
             const elBrancas = eJogadorBrancas ? elJogador : elIA;
             const elPretas = eJogadorBrancas ? elIA : elJogador;
@@ -58,6 +62,8 @@ export const relogio = new Clock(
 
             elBrancas.classList.toggle('perigo', segW <= 30);
             elPretas.classList.toggle('perigo', segB <= 30);
+
+
         }
     },
     (quemPerdeu) => {
@@ -140,11 +146,16 @@ export function tratarCliqueCasa(linha, coluna) {
         jogo.moverPeca(estadoJogo.casaSelecionada.linha, estadoJogo.casaSelecionada.coluna, linha, coluna);
         limparSelecao();
 
-        const estadoFim = jogo.verificarFimDeJogo ? jogo.verificarFimDeJogo() : null;
+        const estadoFim = jogo.verificarFimDeJogo();
         if (estadoFim) {
+            if (estadoFim.vencedor) {
+                const resultado = estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'derrota';
+                finalizarPartida(resultado, estadoFim.tipo);
+            } else {
+                finalizarPartida('empate', estadoFim.tipo);
+            }
             atualizarTela();
             tocarSom('xequeMate');
-            finalizarPartida(estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'derrota', estadoFim.tipo);
             return;
         }
 
@@ -222,11 +233,15 @@ export async function executarTurnoIA() {
 
         const estadoFim = jogo.verificarFimDeJogo();
         if (estadoFim) {
-            atualizarTela();
-            tocarSom('xequeMate')
-            pararPensamentoIAComentario();
-            finalizarPartida(estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'derrota', estadoFim.tipo);
+            if (estadoFim.vencedor) {
+                const resultado = estadoFim.vencedor === estadoJogo.corJogador ? 'vitoria' : 'derrota';
+                finalizarPartida(resultado, estadoFim.tipo);
+            } else {
+                finalizarPartida('empate', estadoFim.tipo);
+            }
             estadoJogo.processandoIA = false;
+            atualizarTela()
+            tocarSom('xequeMate')
             return;
         }
 
@@ -286,7 +301,7 @@ export function desfazerJogada() {
     estadoJogo.estadoAnterior = null;
 
     atualizarBotaoDesfazer();
-    btnDesfazer.lastChild.textContent =`Desfazer Jogada(${estadoJogo.oportunidade})`
+    btnDesfazer.lastChild.textContent = `Desfazer Jogada(${estadoJogo.oportunidade})`
     relogio.mudarTurno ? relogio.mudarTurno(jogo.turno) : relogio.alternarTurno();
     atualizarTela();
     tocarSom('movimento');
