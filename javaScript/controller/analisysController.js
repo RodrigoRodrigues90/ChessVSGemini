@@ -41,6 +41,7 @@ export function iniciarModoAnalise(dadosJSON, estadoJogoOriginal, callbackRestau
     // Alterna os controles da interface
     document.querySelector('.game-controls:not(#painel-analise)')?.classList.add('modal-oculto');
     document.getElementById('painel-analise')?.classList.remove('modal-oculto');
+    document.querySelectorAll('.wrapper-painel').forEach(el => el.classList.add('modal-oculto'));
 
     const elTabuleiro = document.getElementById('tabuleiro');
     elTabuleiro?.classList.add('tabuleiro-analise');
@@ -201,7 +202,8 @@ export function encerrarAnalise() {
     // Oculta os controles de análise e retorna os controles normais
     document.getElementById('painel-analise')?.classList.add('modal-oculto');
     document.querySelector('.game-controls:not(#painel-analise)')?.classList.remove('modal-oculto');
-
+    document.querySelectorAll('.wrapper-painel').forEach(el => el.classList.remove('modal-oculto'));
+    
     // Remove os estilos visuais da análise
     const elTabuleiro = document.getElementById('tabuleiro') || document.querySelector('.tabuleiro');
     elTabuleiro?.classList.remove('tabuleiro-analise');
