@@ -294,3 +294,84 @@ export function removerSetaOrientacao() {
         camadaAnterior.remove();
     }
 }
+
+function calcularPorcentagemAvaliacao(avaliacao, turnoAtual = 'w', perspectiva = 'w') {
+    // 1. Caso a API retorne nulo ou sem score em posição final de jogo
+    if (!avaliacao || avaliacao.value === undefined || avaliacao.value === null) {
+        return { pctBrancas: 50, texto: '0.0' };
+    }
+
+    let { unit, value } = avaliacao;
+    const ePretas = perspectiva === 'b';
+
+    // 2. Trata Xeque-Mate
+    if (unit === 'mate') {
+        // Se value for 0 (Xeque-mate já consolidado no tabuleiro):
+        // Quem está com o turno levou o mate, portanto o outro jogador venceu 100%.
+        let mateAbsoluto = value;
+        if (value === 0) {
+            mateAbsoluto = (turnoAtual === 'b') ? 1 : -1; // Brancas venceram se for a vez das Pretas
+        } else if (turnoAtual === 'b') {
+            mateAbsoluto = -value;
+        }
+
+        const pctBrancas = mateAbsoluto > 0 ? 100 : 0;
+        
+        const mateExibicao = ePretas ? -mateAbsoluto : mateAbsoluto;
+        const texto = mateExibicao > 0 ? `M${Math.abs(mateExibicao)}` : `-M${Math.abs(mateExibicao)}`;
+        
+        return { pctBrancas, texto };
+    }
+
+    // 3. Centipawns (value positivo = Brancas em vantagem)
+    const cpAbsolutoBrancas = (turnoAtual === 'b') ? -value : value;
+
+    // Porcentagem Real das Brancas (0% a 100%)
+    const pctBrancas = 50 + 50 * (2 / (1 + Math.exp(-0.00368 * cpAbsolutoBrancas)) - 1);
+
+    // Formata o Texto para a Perspectiva do Jogador Atual
+    const cpJogador = ePretas ? -cpAbsolutoBrancas : cpAbsolutoBrancas;
+    const sinal = cpJogador > 0 ? '+' : '';
+    const texto = `${sinal}${(cpJogador / 100).toFixed(1)}`;
+
+    const pctBrancasAjustada = Math.min(Math.max(pctBrancas, 3), 97);
+
+    return {
+        pctBrancas: pctBrancasAjustada,
+        texto
+    };
+}
+
+export function atualizarBarraAvaliacao(avaliacaoStockfish, turnoAtual = 'w', perspectiva = 'w') {
+    const elContainer = document.querySelector('.container-barra-avaliacao');
+    const elBarraBrancas = document.getElementById('barra-brancas');
+    const elTexto = document.getElementById('texto-avaliacao');
+
+    if (!elBarraBrancas || !elContainer) return;
+
+    // Repassa o turnoAtual para normalizar a oscilação da API
+    const { pctBrancas, texto } = calcularPorcentagemAvaliacao(avaliacaoStockfish, turnoAtual, perspectiva);
+
+    // Cores fixas da UI: barra interna é Clara (#e8e8e8), fundo do container é Escuro (#262421)
+    elContainer.style.backgroundColor = '#262421';
+    elBarraBrancas.style.backgroundColor = '#e8e8e8';
+
+    if (perspectiva === 'b') {
+        // Visão das Pretas: As Brancas ficam no TOPO
+        elContainer.style.flexDirection = 'column';
+    } else {
+        // Visão das Brancas: As Brancas ficam na BASE
+        elContainer.style.flexDirection = 'column-reverse';
+    }
+
+    // Aplica a porcentagem real da vantagem das Brancas
+    elBarraBrancas.style.height = `${pctBrancas}%`;
+
+    if (elTexto) {
+        elTexto.textContent = texto;
+
+        // Ajuste de contraste do texto conforme quem domina a área visual
+        const brancasDominam = pctBrancas > 50;
+        elTexto.style.color = brancasDominam ? '#262421' : '#e8e8e8';
+    }
+}

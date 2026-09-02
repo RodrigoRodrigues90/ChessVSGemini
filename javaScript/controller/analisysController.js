@@ -1,13 +1,15 @@
 import { Tabuleiro } from '../core/tabuleiro.js';
 import { algebraicoParaCoord, gerarFEN } from '../core/notations.js';
-import { removerSetaOrientacao, renderizarTabuleiro, desenharSetaOrientacao } from '../UI/ui.js';
+import { removerSetaOrientacao, renderizarTabuleiro, desenharSetaOrientacao, atualizarBarraAvaliacao } from '../UI/ui.js';
 import { relogio } from './gameController.js';
+import { obterJogadaStockfish } from '../service/api.js';
 
 let sessaoOriginalPausada = null;
 let historicoAnalise = [];
 let indiceLanceAtual = 0;
 let tabuleiroAnalise = null;
 let corPerspectivaAnalise = 'w';
+let turnoAtualAnalise = 'w';
 
 /**
  * Inicia o modo de análise congelando a sessão ativa
@@ -40,6 +42,7 @@ export function iniciarModoAnalise(dadosJSON, estadoJogoOriginal, callbackRestau
 
     // Alterna os controles da interface
     document.querySelector('.game-controls:not(#painel-analise)')?.classList.add('modal-oculto');
+    document.querySelector('.container-barra-avaliacao')?.classList.remove('modal-oculto');
     document.getElementById('painel-analise')?.classList.remove('modal-oculto');
     document.querySelectorAll('.painel-pecas').forEach(el => el.classList.add('modal-oculto'));
 
@@ -76,26 +79,16 @@ export function buscarMelhorLanceComDebounce(fen, callbackSucesso, atrasoMs = 20
     // 3. Agenda a chamada de API após o tempo de espera
     temporizadorDebounce = setTimeout(async () => {
         try {
-            const resposta = await fetch('https://chess-stockfish-iota.vercel.app/api/jogada-ia', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    fen: fen,
-                    level: 20,
-                    historico: historicoAnalise
-                })
-            });
+            const resposta = await obterJogadaStockfish(fen, 20, historicoAnalise);
 
-            if (!resposta.ok) throw new Error('Falha ao obter análise');
-
-            const dados = await resposta.json();
+            if (!resposta) throw new Error('Falha ao obter análise');
 
             // Salva no cache
-            cacheAnalise.set(fen, dados);
+            cacheAnalise.set(fen, resposta);
 
             // Retorna os dados para a UI
             if (typeof callbackSucesso === 'function') {
-                callbackSucesso(dados);
+                callbackSucesso(resposta);
             }
         } catch (erro) {
             console.error('Erro na análise da IA:', erro);
@@ -104,6 +97,7 @@ export function buscarMelhorLanceComDebounce(fen, callbackSucesso, atrasoMs = 20
 }
 
 function atualizarComentarioAnalise(lance) {
+    console.log(lance);
     const elComentario = document.getElementById('texto-comentario');
     if (elComentario) {
         elComentario.innerHTML = `
@@ -111,11 +105,16 @@ function atualizarComentarioAnalise(lance) {
             Buscando lances...
         `;
     }
-    if (lance) {
+    if (lance && lance !== '(none)') {
         elComentario.innerHTML = `
             <span style="color: #3b82f6; font-weight: bold;">🔍 MODO ANÁLISE</span><br><br>
             Melhor lance: ${lance}
         `;
+    }else{
+        elComentario.innerHTML = `
+            <span style="color: #3b82f6; font-weight: bold;">🔍 MODO ANÁLISE</span><br><br>
+            Sem mais lances.
+        `;  
     }
 }
 
@@ -141,6 +140,7 @@ export function irParaLance(indice) {
 
         tabuleiroAnalise.moverPeca(orig.linha, orig.coluna, dest.linha, dest.coluna);
     }
+    turnoAtualAnalise = (indiceLanceAtual % 2 === 0) ? 'w' : 'b';
 
     // Renderiza a posição considerando a perspectiva e sem seleção ativa
     renderizarTabuleiro(tabuleiroAnalise, corPerspectivaAnalise);
@@ -149,6 +149,9 @@ export function irParaLance(indice) {
         if (analise && analise.movimento) {
             // Atualiza o painel com a sugestão do motor
             exibirMelhorLanceNaUI(analise.movimento);
+
+            // // Atualiza a barra de vantagem
+            atualizarBarraAvaliacao(analise.score, turnoAtualAnalise, corPerspectivaAnalise);
         }
     }, 200);
 }
@@ -202,8 +205,9 @@ export function encerrarAnalise() {
     // Oculta os controles de análise e retorna os controles normais
     document.getElementById('painel-analise')?.classList.add('modal-oculto');
     document.querySelector('.game-controls:not(#painel-analise)')?.classList.remove('modal-oculto');
+    document.querySelector('.container-barra-avaliacao')?.classList.add('modal-oculto');
     document.querySelectorAll('.painel-pecas').forEach(el => el.classList.remove('modal-oculto'));
-    
+
     // Remove os estilos visuais da análise
     const elTabuleiro = document.getElementById('tabuleiro') || document.querySelector('.tabuleiro');
     elTabuleiro?.classList.remove('tabuleiro-analise');

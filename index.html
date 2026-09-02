@@ -219,8 +219,15 @@
                 <div class="painel-pecas" id="pecas-capturadas-ia"></div>
             </div>
         </div>
-
-        <div id="tabuleiro" class="tabuleiro"></div>
+        <!-- tabuleiro -->
+        <div class="wrapper-tabuleiro">
+            <div class="container-barra-avaliacao modal-oculto">
+                <div id="barra-brancas" class="barra-brancas" style="height: 50%;">
+                    <span id="texto-avaliacao" class="texto-avaliacao">0.0</span>
+                </div>
+            </div>
+            <div id="tabuleiro" class="tabuleiro"></div>
+        </div>
 
         <div class="wrapper-painel">
             <div class="timer-conteiner jogador"><span id="timer-jogador">10:00</span></div>
@@ -256,8 +263,7 @@
         <span id="indicador-lance-analise" style="color: #ffffff; font-weight: bold; font-size: 0.9rem;">0 / 0</span>
         <button id="btn-proximo-lance" class="btn-action" title="Próximo Lance">&gt;</button>
         <button id="btn-ultimo-lance" class="btn-action" title="Último Lance">&gt;|</button>
-        <button id="btn-sair-analise" class="btn-action"
-            title="Sair da Análise">Sair</button>
+        <button id="btn-sair-analise" class="btn-action" title="Sair da Análise">Sair</button>
     </div>
 
     <!-- Rodapé do Projeto -->

@@ -418,6 +418,51 @@ body {
     box-shadow: none;
 }
 
+.wrapper-tabuleiro {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    height: 100%;
+
+}
+
+.container-barra-avaliacao {
+    width: 22px;
+    height: 100%; /* Sincroniza com a altura do tabuleiro */
+    min-height: 320px;
+    background-color: #262421; /* Pretas (topo) */
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse; /* Brancas sobem a partir de baixo */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container-barra-avaliacao.invertida {
+    flex-direction: column;
+}
+
+.barra-brancas {
+    width: 100%;
+    background-color: #e8e8e8; /* Brancas (base) */
+    transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Transição suave entre posições */
+    position: relative;
+    color: #000000;
+}
+
+.texto-avaliacao {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 800;
+    font-family: sans-serif;
+    pointer-events: none;
+    z-index: 2;
+}
+
 /* ==========================================================================
    7. MODAIS - BASE COMPARTILHADA
    ========================================================================== */
