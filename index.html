@@ -97,17 +97,24 @@
 
             <div class="setting-item vertical">
                 <div class="setting-label-row">
-                    <label for="music-volume">Volume da Música</label>
+                    <label for="music-volume">Som Ambiente</label>
                     <span id="music-volume-value">80%</span>
                 </div>
                 <input type="range" id="music-volume" min="0" max="100" value="80">
+                <div class="music-controls-row">
+                    <button id="btn-prev-track" class="btn-action" title="Anterior">⏮</button>
+                    <button id="btn-toggle-music" class="btn-action" title="Tocar / Pausar">▶ / ⏸</button>
+                    <button id="btn-next-track" class="btn-action" title="Próxima">⏭</button>
+                    <div id="name-music" class="modal-subtitle"></div>
+                </div>
             </div>
+            
             <div class="setting-item vertical">
                 <div class="setting-label-row">
                     <label>Partida Salva</label>
                     <span class="modal-subtitle">.json</span>
                 </div>
-                <button class="btn-action">Importar Jogo</button>
+                <button id="import" class="btn-action">Importar Jogo</button>
             </div>
         </div>
     </div>
@@ -144,11 +151,7 @@
 
         <div class="audio-credits">
             <span class="audio-title">Som Ambiente:</span>
-            <div class="audio-info">
-                <a href="https://www.youtube.com/watch?v=4Tr0otuiQuU&list=RD4Tr0otuiQuU&start_radio=1" target="_blank"
-                    rel="noopener noreferrer" class="audio-link">
-                    Moonlight Sonata - Ludwig van Beethoven
-                </a>
+            <div id="audio-info" class="audio-info">
             </div>
         </div>
 

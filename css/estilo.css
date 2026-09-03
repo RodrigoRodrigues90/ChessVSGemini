@@ -965,6 +965,9 @@ input[type="range"]#music-volume::-webkit-slider-thumb {
 input[type="range"]#music-volume::-webkit-slider-thumb:hover {
     transform: scale(1.15);
 }
+.audio-marquee{
+    max-width: 220px ;
+}
 
 /* ==========================================================================
    11. RODAPÉ DA PÁGINA

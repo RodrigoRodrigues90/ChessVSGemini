@@ -2,7 +2,12 @@ import {
     carregarSons,
     setSFXAtivo,
     setVolumeMusica,
-    obterConfiguracoesAudio
+    obterConfiguracoesAudio,
+    proximaFaixa,
+    faixaAnterior,
+    alternarMusica,
+    atualizarBarraRange,
+    obterEstadoMusica
 } from './service/audio.js';
 import {
     estadoJogo,
@@ -24,6 +29,8 @@ const btnsDificuldade = document.querySelectorAll('.btn-dificuldade');
 
 const btnDesfazer = document.getElementById('btn-desfazer');
 const btnDesistir = document.getElementById('btn-desistir');
+
+
 
 //=============== INICIALIZAÇÃO ===============//
 document.addEventListener('DOMContentLoaded', () => {
@@ -79,6 +86,8 @@ btnDesistir?.addEventListener('click', desistirPartida);
 
 //--------------- MODAL "SOBRE" (ABOUT) ----------------//
 function configurarModalAbout() {
+    const audioInfo = document.getElementById('audio-info');
+    const musicTitle = document.getElementById('name-music');
     const btnAbout = document.getElementById('btn-about');
     const modalAbout = document.getElementById('modal-about');
     const btnCloseAbout = document.getElementById('btn-close-about');
@@ -86,6 +95,7 @@ function configurarModalAbout() {
     if (!btnAbout || !modalAbout) return;
 
     const openModal = () => {
+        atualizarInfoAudioUI();
         modalAbout.classList.remove('hidden');
         modalAbout.setAttribute('aria-hidden', 'false');
     };
@@ -101,6 +111,19 @@ function configurarModalAbout() {
     modalAbout.addEventListener('click', (event) => {
         if (event.target === modalAbout) closeModal();
     });
+    
+    // Função que busca a música atual e atualiza a UI do modal
+    const atualizarInfoAudioUI = () => {
+        const { titulo, link } = obterEstadoMusica();
+        if (audioInfo && musicTitle) {
+            audioInfo.innerHTML = `
+            <marquee behavior="scroll" direction="left" scrollamount="3" class="audio-marquee">
+            <a href="${link}" target="_blank" rel="noopener noreferrer" class="audio-link">${titulo}</a>
+            </marquee>`;
+            musicTitle.innerHTML = `<span class="modal-subtitle">${titulo}</span>`;
+        }
+    
+    };
 }
 
 //------------- MODAL SETTINGS & IMPORTAÇÃO ----------------//
@@ -108,16 +131,22 @@ function configurarModalSettings() {
     const btnSettings = document.getElementById('btn-settings');
     const modalSettings = document.getElementById('modal-settings');
     const btnCloseSettings = document.getElementById('btn-close-setings');
-    const btnImportar = modalSettings?.querySelector('.btn-action');
+    const btnImportar = document.getElementById('import');
 
     const sfxToggle = document.getElementById('sfx-toggle');
     const musicVolume = document.getElementById('music-volume');
     const musicVolumeValue = document.getElementById('music-volume-value');
 
+    const btnPrev = document.getElementById('btn-prev-track');
+    const btnNext = document.getElementById('btn-next-track');
+    const btnToggle = document.getElementById('btn-toggle-music');
+
+
     if (!modalSettings) return;
 
     // Funções de Controle do Modal
     const openModal = () => {
+        atualizarBarraRange(musicVolume);
         modalSettings.classList.remove('hidden');
         modalSettings.setAttribute('aria-hidden', 'false');
     };
@@ -141,7 +170,20 @@ function configurarModalSettings() {
     musicVolume?.addEventListener('input', (e) => {
         const valor = e.target.value;
         if (musicVolumeValue) musicVolumeValue.textContent = `${valor}%`;
+        atualizarBarraRange(musicVolume);
         setVolumeMusica(valor);
+    });
+
+    btnPrev.addEventListener('click', () => {
+        faixaAnterior();
+    });
+
+    btnNext.addEventListener('click', () => {
+        proximaFaixa();
+    });
+
+    btnToggle.addEventListener('click', () => {
+        alternarMusica();
     });
 
     // Importação de partida JSON para análise
