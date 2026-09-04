@@ -10,12 +10,10 @@ const arquivosSons = {
 
 // Array exportado para renderização do seletor na UI
 export const playlist = [
-    { id: 0, titulo: "Moonlight Sonata - Ludwig van Beethoven", url: "./sounds/music.mp3", ganho: 0.5 , link: "https://www.youtube.com/watch?v=4Tr0otuiQuU&list=RD4Tr0otuiQuU&start_radio=1" },
-    { id: 1, titulo: "Cornfield Chase - Hans Zimmer", url: "./sounds/interestelar.mp3", ganho: 0.1 , link: "https://www.youtube.com/watch?v=7GlsxNI4LVI&list=RDUDVtMYqUAyw&index=5" },
-    { id: 2, titulo: "Hey You - Pink Floyd", url: "./sounds/hey.mp3", ganho: 0.5 , link:"https://www.youtube.com/watch?v=2G1g1G1G1G1"},
-    { id: 3, titulo: "Planet Caravan - Black Sabbath", url: "./sounds/Planet.mp3", ganho: 0.5 , link:""},
-    { id: 4, titulo: "Nocturne op.9 No.2 - Chopin", url: "./sounds/Chopin.mp3", ganho: 0.5 , link:""},
-    { id: 5, titulo: "Confortably Numb - Pink Floyd", url: "./sounds/Numb.mp3", ganho: 0.5 , link:""},
+    { id: 0, titulo: "Moonlight Sonata - Ludwig van Beethoven", url: "./sounds/music.mp3", ganho: 0.5 },
+    { id: 1, titulo: "Nocturne op.9 No.2 - Chopin", url: "./sounds/Chopin.mp3", ganho: 0.5 },
+    { id: 2, titulo: "Cornfield Chase - Hans Zimmer", url: "./sounds/interestelar.mp3", ganho: 0.5 },
+    { id: 3, titulo: "Confortably Numb - Pink Floyd", url: "./sounds/Numb.mp3", ganho: 0.5 },
 ];
 
 // Recupera a faixa salva ou inicia na 0
@@ -109,7 +107,6 @@ export function obterConfiguracoesAudio() {
 export function obterEstadoMusica() {
     return {
         titulo: playlist[indiceFaixaAtual].titulo,
-        link: playlist[indiceFaixaAtual].link
     };
 }
 

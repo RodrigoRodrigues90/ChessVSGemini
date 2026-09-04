@@ -87,7 +87,6 @@ btnDesistir?.addEventListener('click', desistirPartida);
 //--------------- MODAL "SOBRE" (ABOUT) ----------------//
 function configurarModalAbout() {
     const audioInfo = document.getElementById('audio-info');
-    const musicTitle = document.getElementById('name-music');
     const btnAbout = document.getElementById('btn-about');
     const modalAbout = document.getElementById('modal-about');
     const btnCloseAbout = document.getElementById('btn-close-about');
@@ -95,7 +94,7 @@ function configurarModalAbout() {
     if (!btnAbout || !modalAbout) return;
 
     const openModal = () => {
-        atualizarInfoAudioUI();
+        atualizarInfoAudioUI(audioInfo, 'audio-link');
         modalAbout.classList.remove('hidden');
         modalAbout.setAttribute('aria-hidden', 'false');
     };
@@ -111,20 +110,19 @@ function configurarModalAbout() {
     modalAbout.addEventListener('click', (event) => {
         if (event.target === modalAbout) closeModal();
     });
-    
-    // Função que busca a música atual e atualiza a UI do modal
-    const atualizarInfoAudioUI = () => {
-        const { titulo, link } = obterEstadoMusica();
-        if (audioInfo && musicTitle) {
-            audioInfo.innerHTML = `
-            <marquee behavior="scroll" direction="left" scrollamount="3" class="audio-marquee">
-            <a href="${link}" target="_blank" rel="noopener noreferrer" class="audio-link">${titulo}</a>
-            </marquee>`;
-            musicTitle.innerHTML = `<span class="modal-subtitle">${titulo}</span>`;
-        }
-    
-    };
+
 }
+
+// Função que busca a música atual e atualiza a UI do modal
+function atualizarInfoAudioUI(elementoTitulo, className = 'modal-subtitle') {
+    const {titulo} = obterEstadoMusica();
+    if (elementoTitulo) {
+        elementoTitulo.innerHTML = `
+            <marquee behavior="scroll" direction="left" scrollamount="3" class="audio-marquee">
+                <span class="${className}">${titulo}</span>
+            </marquee>`;
+    }
+};
 
 //------------- MODAL SETTINGS & IMPORTAÇÃO ----------------//
 function configurarModalSettings() {
@@ -136,6 +134,7 @@ function configurarModalSettings() {
     const sfxToggle = document.getElementById('sfx-toggle');
     const musicVolume = document.getElementById('music-volume');
     const musicVolumeValue = document.getElementById('music-volume-value');
+    const musicTitle = document.getElementById('name-music');
 
     const btnPrev = document.getElementById('btn-prev-track');
     const btnNext = document.getElementById('btn-next-track');
@@ -146,6 +145,7 @@ function configurarModalSettings() {
 
     // Funções de Controle do Modal
     const openModal = () => {
+        atualizarInfoAudioUI(musicTitle);
         atualizarBarraRange(musicVolume);
         modalSettings.classList.remove('hidden');
         modalSettings.setAttribute('aria-hidden', 'false');
@@ -176,10 +176,12 @@ function configurarModalSettings() {
 
     btnPrev.addEventListener('click', () => {
         faixaAnterior();
+        atualizarInfoAudioUI(musicTitle);
     });
 
     btnNext.addEventListener('click', () => {
         proximaFaixa();
+        atualizarInfoAudioUI(musicTitle);
     });
 
     btnToggle.addEventListener('click', () => {
