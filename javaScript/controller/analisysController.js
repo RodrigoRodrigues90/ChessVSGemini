@@ -6,6 +6,7 @@ import { obterJogadaStockfish } from '../service/api.js';
 
 let sessaoOriginalPausada = null;
 let historicoAnalise = [];
+let linhaPv = '';
 let indiceLanceAtual = 0;
 let tabuleiroAnalise = null;
 let corPerspectivaAnalise = 'w';
@@ -97,7 +98,7 @@ export function buscarMelhorLanceComDebounce(fen, callbackSucesso, atrasoMs = 20
 }
 
 function atualizarComentarioAnalise(lance) {
-    console.log(lance);
+
     const elComentario = document.getElementById('texto-comentario');
     if (elComentario) {
         elComentario.innerHTML = `
@@ -147,6 +148,10 @@ export function irParaLance(indice) {
     atualizarUIAnalise();
     buscarMelhorLanceComDebounce(gerarFEN(tabuleiroAnalise), (analise) => {
         if (analise && analise.movimento) {
+
+            //atualiza a linha PV para simulação futuras
+            linhaPv = analise.pv || '';
+
             // Atualiza o painel com a sugestão do motor
             exibirMelhorLanceNaUI(analise.movimento);
 
@@ -190,12 +195,14 @@ function configurarEventosAnalise() {
     const btnProximo = document.getElementById('btn-proximo-lance');
     const btnUltimo = document.getElementById('btn-ultimo-lance');
     const btnSair = document.getElementById('btn-sair-analise');
+    const btnSimularPV = document.getElementById('btn-simular-pv');
 
     if (btnPrimeiro) btnPrimeiro.onclick = () => irParaLance(0);
     if (btnAnterior) btnAnterior.onclick = () => irParaLance(indiceLanceAtual - 1);
     if (btnProximo) btnProximo.onclick = () => irParaLance(indiceLanceAtual + 1);
     if (btnUltimo) btnUltimo.onclick = () => irParaLance(historicoAnalise.length);
     if (btnSair) btnSair.onclick = encerrarAnalise;
+    if (btnSimularPV) btnSimularPV.onclick = () => simularLinhaPV(linhaPv, 800);
 }
 
 /**
@@ -236,4 +243,74 @@ export function encerrarAnalise() {
 
     cacheAnalise.clear();
     removerSetaOrientacao();
+}
+
+//========SIMULAR MOVIMENTOS DA ANALISE========//
+let executandoSimulacaoPV = false;
+
+/**
+ * Executa a sequência trazida pela Variação Principal (PV) diretamente no tabuleiro de análise
+ * @param {string} pvString - Cadeia de lances UCI (ex: "e2e4 e7e5 g1f3")
+ * @param {number} intervaloMs - Tempo de espera em ms entre cada jogada (padrão 800ms)
+ */
+export async function simularLinhaPV(pvString, intervaloMs = 800) {
+    if (!pvString || executandoSimulacaoPV || !tabuleiroAnalise) return;
+
+    const lancesUCI = pvString.trim().split(/\s+/);
+    if (lancesUCI.length === 0) return;
+
+    const lanceInicialIndex = indiceLanceAtual;
+
+    alternarBloqueioBotoesUI(true);
+
+    for (const uci of lancesUCI) {
+        if (!uci || uci.length < 4) continue;
+
+        const orig = algebraicoParaCoord(uci.substring(0, 2));
+        const dest = algebraicoParaCoord(uci.substring(2, 4));
+
+        if (!orig || !dest) break;
+
+        tabuleiroAnalise.moverPeca(orig.linha, orig.coluna, dest.linha, dest.coluna);
+
+        renderizarTabuleiro(tabuleiroAnalise, corPerspectivaAnalise);
+
+        // Aguarda o intervalo de tempo antes da próxima jogada
+        await new Promise(resolve => setTimeout(resolve, intervaloMs));
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    //Restaura o estado original e reabilita os controles
+    irParaLance(lanceInicialIndex);
+    alternarBloqueioBotoesUI(false);
+}
+
+/**
+ * Bloqueia/Libera os controles e botões da interface durante a execução
+ * @param {boolean} bloquear - Estado de bloqueio
+ */
+function alternarBloqueioBotoesUI(bloquear) {
+    executandoSimulacaoPV = bloquear;
+
+    // Seleciona botões de análise e do menu principal
+    const botoes = document.querySelectorAll(
+        '#painel-analise button, #btn-settings, #btn-about, .btn-action'
+    );
+    const elTabuleiro = document.getElementById('tabuleiro');
+    
+    if (bloquear) {
+        elTabuleiro.classList.add('tabuleiro-simulado');
+    } else {
+        elTabuleiro.classList.remove('tabuleiro-simulado');
+    }
+    
+    botoes.forEach(btn => {
+        btn.disabled = bloquear;
+        if (bloquear) {
+            btn.classList.add('disabled-lock');
+        } else {
+            btn.classList.remove('disabled-lock');
+        }
+    });
 }

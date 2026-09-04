@@ -1,5 +1,5 @@
-//const BASE_URL = 'https://chess-stockfish-iota.vercel.app';
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://chess-stockfish-iota.vercel.app';
+//const BASE_URL = 'http://localhost:3000';
 
 /**
  * Envia o FEN atual para o Stockfish e retorna o movimento calculado.
