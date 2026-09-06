@@ -373,5 +373,13 @@ export function atualizarBarraAvaliacao(avaliacaoStockfish, turnoAtual = 'w', pe
         // Ajuste de contraste do texto conforme quem domina a área visual
         const brancasDominam = pctBrancas > 50;
         elTexto.style.color = brancasDominam ? '#262421' : '#e8e8e8';
+        
+        if (perspectiva === 'b') {
+            elTexto.style.bottom = brancasDominam ? '0' : '-10px';
+        }else{
+            elTexto.style.top = brancasDominam ? '0' : '-10px';
+            
+        }
+        
     }
 }
